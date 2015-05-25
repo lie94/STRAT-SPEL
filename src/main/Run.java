@@ -9,14 +9,17 @@ import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 
+import nav.Screen;
+
 public class Run extends Canvas implements Runnable{
 	private static final long serialVersionUID = 1L;
 	private static final int TARGET_FPS = 60;
-	private final String NAME = "BOC";
+	private final String NAME = "STRAT-GAME";
 	private final int MAXW = 1280, MAXH = 720;
 	JFrame frame; //Can be showed in package
 	private boolean running;
 	private GameState gs;
+	private GameStateManager gsm;
 	public int fps = 0;
 	/**
 	 * Starts the program
@@ -58,8 +61,10 @@ public class Run extends Canvas implements Runnable{
 	 */
 	public synchronized void start(){
 		running = true;
-		gs = new GameState(this);
-		addKeyListener((KeyListener) gs);
+		Screen s = new Screen();
+		gs = new GameState(s);
+		gsm = new GameStateManager(gs,s);
+		addKeyListener((KeyListener) gsm);
 		new Thread(this).start();
 	}
 	/**
@@ -81,7 +86,7 @@ public class Run extends Canvas implements Runnable{
 			long t0 = System.currentTimeMillis();
 			render();
 			frames++;
-			running = gs.update();
+			gsm.update();
 			long t1 = System.currentTimeMillis();
 			if(t1-t0 < 1000.0 / TARGET_FPS){
 				while(t1-t0 < 1000.0 / TARGET_FPS){

@@ -7,25 +7,33 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import nav.Pos;
+import nav.Screen;
 import square.Square;
 
-public class GameMap implements Updateable{
+public class GameMap implements Refresh{
 	private Square[][] squares;
+	public static int MAX_WIDTH = 0, MAX_HEIGHT = 0;
 	private final int size;
 	private final int type;
+	private Screen s;
 	private BufferedImage tiles;
-	public GameMap(final int size, final int type){
+	public GameMap(final int size, final int type, Screen s){
 		if(size < 0 || size > 5){
 			throw new IllegalArgumentException("Size must be larger than 0 and smaller than 5");
 		}
+		this.s = s;
 		this.size = size;
 		this.type = type;
 		squares = generateMap();
+		MAX_WIDTH = squares.length * Square.WIDTH;
+		MAX_HEIGHT = squares[0].length * Square.HEIGHT;
 		try {
 			tiles = ImageIO.read(getClass().getResourceAsStream("/res/tiles.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println(toString());
 	}
 	public int getType(){
 		return type;
@@ -55,12 +63,49 @@ public class GameMap implements Updateable{
 	}
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void draw(Graphics g) {
-		g.drawImage(tiles, 0, 0, tiles.getWidth(), tiles.getHeight(), 505, 0, 500, 500, null);
+		Pos p, temp;
+		for(int i = 0; i < squares.length; i++){
+			for(int j = 0; j < squares[0].length; j++){
+				p = getPosOfSquare(i,j);
+				if(	s.isSquareIn(p)){
+					p.minus(s);
+					temp = typeToMapPart(squares[i][j]);
+					//System.out.println(squares[i][j].getType() + ": "  + temp);
+					//g.drawImage(tiles, (int) p.getX(), (int) p.getY(), Square.WIDTH, Square.HEIGHT,null);
+					System.out.println(temp);
+					g.drawImage(tiles, (int) p.getX(), (int) p.getY(), Square.WIDTH	, Square.HEIGHT, (int) temp.getX(), (int) temp.getY(), 500, 500, null);
+					//g.drawImage(tiles, (int) p.getX(), (int) p.getY(), 500			, 500					, (int) temp.getX(), (int) temp.getY(), 500, 500, null);
+				}
+			}
+		}
+	}
+	public static Pos typeToMapPart(int type){
+		switch(type){
+		case 0:
+			return new Pos(0,0);
+		case 1:
+			return new Pos(505,0);
+		case 2:
+			return new Pos(1010,0);
+		case 3:
+			return new Pos(0,505);
+		case 4:
+			return new Pos(505,505);
+		case 5:
+			return new Pos(1010,505);
+		default:
+			return null;
+		}
+	}
+	public static Pos typeToMapPart(Square s){
+		return typeToMapPart(s.getType());
+	}
+	public Pos getPosOfSquare(int i, int j){
+		return new Pos(Square.WIDTH * i, Square.HEIGHT * j);
 	}
 	private Square[][] generateMap(){
 		Square[][] temp;
@@ -108,7 +153,7 @@ public class GameMap implements Updateable{
 							temp[0][j].getType(), temp[0][j - 1].getType());
 			}
 		}
-		return new Square(type);
+		return new Square(type,this);
 	}
 	private int terrain(Random rn,int ... surroundingSquareTypes){
 		double proc = (rn.nextInt(99) + 1 / 100);
@@ -140,5 +185,10 @@ public class GameMap implements Updateable{
 			}
 		}
 		return weights[5];
+	}
+	@Override
+	public void newTurn() {
+		// TODO Auto-generated method stub
+		
 	}
 }
