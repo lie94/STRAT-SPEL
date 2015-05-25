@@ -68,16 +68,25 @@ public class GameMap implements Refresh{
 	@Override
 	public void draw(Graphics g) {
 		Pos p, temp;
+		BufferedImage tempImg;
 		for(int i = 0; i < squares.length; i++){
 			for(int j = 0; j < squares[0].length; j++){
 				p = getPosOfSquare(i,j);
 				if(	s.isSquareIn(p)){
 					p.minus(s);
 					temp = typeToMapPart(squares[i][j]);
+					g.drawImage(tiles, 
+							(int) p.getX()					, (int) p.getY()				,
+							//500								, 500,
+							(int) p.getX() + Square.WIDTH	, (int) p.getY() + Square.HEIGHT,
+							(int) temp.getX()				, (int) temp.getY()				,
+							//500								,	500
+							(int) temp.getX() + 500			, (int) temp.getY() + 500		
+							,null);
+					//tempImg = ; 
 					//System.out.println(squares[i][j].getType() + ": "  + temp);
-					//g.drawImage(tiles, (int) p.getX(), (int) p.getY(), Square.WIDTH, Square.HEIGHT,null);
-					System.out.println(temp);
-					g.drawImage(tiles, (int) p.getX(), (int) p.getY(), Square.WIDTH	, Square.HEIGHT, (int) temp.getX(), (int) temp.getY(), 500, 500, null);
+					//g.drawImage(tiles.getSubimage((int) temp.getX(), (int) temp.getY(), 500, 500), (int) p.getX(), (int) p.getY(), Square.WIDTH, Square.HEIGHT,null);
+					//g.drawImage(tiles, (int) p.getX(), (int) p.getY(), Square.WIDTH	, Square.HEIGHT, (int) temp.getX(), (int) temp.getY(), 500, 500, null);
 					//g.drawImage(tiles, (int) p.getX(), (int) p.getY(), 500			, 500					, (int) temp.getX(), (int) temp.getY(), 500, 500, null);
 				}
 			}
@@ -112,10 +121,10 @@ public class GameMap implements Refresh{
 		Random rn = new Random();
 		switch(size){
 		case 0:
-			temp = new Square[20][36];
+			temp = new Square[36][20];
 			break;
 		default:
-			temp = new Square[40][72];
+			temp = new Square[72][36];
 		}
 		for(int i = 0; i < temp.length; i++){
 			for(int j = 0; j < temp[0].length; j++){
@@ -156,8 +165,8 @@ public class GameMap implements Refresh{
 		return new Square(type,this);
 	}
 	private int terrain(Random rn,int ... surroundingSquareTypes){
-		double proc = (rn.nextInt(99) + 1 / 100);
-		if(proc > 0.80){
+		double proc = (rn.nextInt(99) + 1.0 ) / 100;
+		if(proc > 0.90){
 			return rn.nextInt(6);
 		}
 		int[] weights = new int[6];
@@ -165,26 +174,15 @@ public class GameMap implements Refresh{
 			weights[i]++;
 		}
 		double sum = StatFunc.sum(weights);
-		double waterbuff = 0.8 * sum;
-		sum += ((int) (waterbuff)) * 2;
-		weights[0] += waterbuff;
-		weights[1] += waterbuff;
-		for(int i = 0; i < weights.length; i ++){
-			if(weights[i] / sum > proc){
-				if(i == 0 || i == 1){
-					proc = rn.nextInt(99);
-					if(proc < 70){
-						return 0;
-					}else{
-						return 1;
-					}
-				}
-				return i; 
+		if(weights[0] / (double) sum > 0.5){
+			proc = rn.nextInt(5);
+			if(proc > 0){
+				return 0;
 			}else{
-				proc -= weights[i] / sum;
+				return rn.nextInt(6);
 			}
 		}
-		return weights[5];
+		return rn.nextInt(6);
 	}
 	@Override
 	public void newTurn() {

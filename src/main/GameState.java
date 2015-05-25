@@ -1,11 +1,6 @@
 package main;
 
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
 import nav.Screen;
 
 public class GameState implements Refresh{
@@ -13,6 +8,7 @@ public class GameState implements Refresh{
 	private Screen s;
 	GameState(Screen s){
 		map = new GameMap(0,1,s);
+		this.s = s;
 	}
 	public void update(){
 		

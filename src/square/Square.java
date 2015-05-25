@@ -16,8 +16,9 @@ import main.GameMap;
  *
  */
 public class Square {
-	public static final int WIDTH = 500, HEIGHT = 500;
+	public static final int WIDTH = 50, HEIGHT = 50;
 	private int type;
+	private int imp = 0;
 	//private GameMap map;
 	public Square(final int type, GameMap map){
 		if(type < 0 || type > 5){
@@ -28,5 +29,11 @@ public class Square {
 	}
 	public int getType(){
 		return type;
+	}
+	public int getImp(){
+		return imp;
+	}
+	public void setImp(int imp){
+		this.imp = imp;
 	}
 }

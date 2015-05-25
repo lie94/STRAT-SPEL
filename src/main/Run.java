@@ -20,7 +20,6 @@ public class Run extends Canvas implements Runnable{
 	private boolean running;
 	private GameState gs;
 	private GameStateManager gsm;
-	public int fps = 0;
 	/**
 	 * Starts the program
 	 * @param args
@@ -80,23 +79,15 @@ public class Run extends Canvas implements Runnable{
 	 */
 	@Override
 	public void run() {
-		int frames = 0;
-		long time = System.currentTimeMillis();
 		while(running){
 			long t0 = System.currentTimeMillis();
 			render();
-			frames++;
 			gsm.update();
 			long t1 = System.currentTimeMillis();
 			if(t1-t0 < 1000.0 / TARGET_FPS){
 				while(t1-t0 < 1000.0 / TARGET_FPS){
 					t1 = System.currentTimeMillis();
 				}
-			}
-			if(System.currentTimeMillis() - time > 100){
-				fps = (int) (frames / 10.0);
-				frames = 0;
-				time = System.currentTimeMillis();
 			}
 		}
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
