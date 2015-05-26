@@ -30,8 +30,9 @@ public class Pos {
 		addX(x);
 		addY(y);
 	}
-	public void addX(double x){
+	public Pos addX(double x){
 		this.x += x;
+		return this;
 	}
 	public void addY(double y){
 		this.y += y;
@@ -48,5 +49,8 @@ public class Pos {
 	}
 	public String toString(){
 		return "(" + x + ", " + y + ")";
+	}
+	public Pos clone(){
+		return new Pos(x,y);
 	}
 }

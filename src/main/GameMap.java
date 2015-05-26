@@ -33,7 +33,7 @@ public class GameMap implements Refresh{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(toString());
+		//System.out.println(toString());
 	}
 	public int getType(){
 		return type;
@@ -68,12 +68,20 @@ public class GameMap implements Refresh{
 	@Override
 	public void draw(Graphics g) {
 		Pos p, temp;
-		BufferedImage tempImg;
+		int isIn;
 		for(int i = 0; i < squares.length; i++){
 			for(int j = 0; j < squares[0].length; j++){
 				p = getPosOfSquare(i,j);
-				if(	s.isSquareIn(p)){
-					p.minus(s);
+				isIn = s.isSquareIn(p); 
+				if(	 s.isSquareIn(p) != 0){
+					//p.minus(s);
+					if(isIn == 1)
+						p.minus(s);
+					else
+						if(s.getX() < 0)
+							p.addX(-MAX_WIDTH).minus(s);
+						else
+							p.addX(MAX_WIDTH).minus(s);
 					temp = typeToMapPart(squares[i][j]);
 					g.drawImage(tiles, 
 							(int) p.getX()					, (int) p.getY()				,
@@ -83,11 +91,6 @@ public class GameMap implements Refresh{
 							//500								,	500
 							(int) temp.getX() + 500			, (int) temp.getY() + 500		
 							,null);
-					//tempImg = ; 
-					//System.out.println(squares[i][j].getType() + ": "  + temp);
-					//g.drawImage(tiles.getSubimage((int) temp.getX(), (int) temp.getY(), 500, 500), (int) p.getX(), (int) p.getY(), Square.WIDTH, Square.HEIGHT,null);
-					//g.drawImage(tiles, (int) p.getX(), (int) p.getY(), Square.WIDTH	, Square.HEIGHT, (int) temp.getX(), (int) temp.getY(), 500, 500, null);
-					//g.drawImage(tiles, (int) p.getX(), (int) p.getY(), 500			, 500					, (int) temp.getX(), (int) temp.getY(), 500, 500, null);
 				}
 			}
 		}
@@ -122,6 +125,9 @@ public class GameMap implements Refresh{
 		switch(size){
 		case 0:
 			temp = new Square[36][20];
+			break;
+		case 1:
+			temp = new Square[160][100];
 			break;
 		default:
 			temp = new Square[72][36];

@@ -16,7 +16,7 @@ import main.GameMap;
  *
  */
 public class Square {
-	public static final int WIDTH = 50, HEIGHT = 50;
+	public static final int WIDTH = 10, HEIGHT = 2 * WIDTH;
 	private int type;
 	private int imp = 0;
 	//private GameMap map;
