@@ -9,8 +9,6 @@ import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 
-import nav.Screen;
-
 public class Run extends Canvas implements Runnable{
 	private static final long serialVersionUID = 1L;
 	private static final int TARGET_FPS = 60;
@@ -18,7 +16,6 @@ public class Run extends Canvas implements Runnable{
 	private final int MAXW = 1280, MAXH = 720;
 	JFrame frame; //Can be showed in package
 	private boolean running;
-	private GameState gs;
 	private GameStateManager gsm;
 	/**
 	 * Starts the program
@@ -60,10 +57,11 @@ public class Run extends Canvas implements Runnable{
 	 */
 	public synchronized void start(){
 		running = true;
-		Screen s = new Screen();
-		gs = new GameState(s);
-		gsm = new GameStateManager(gs,s);
+		//Screen s = new Screen();
+		//gs = new GameState();
+		gsm = new GameStateManager();
 		addKeyListener((KeyListener) gsm);
+		addMouseWheelListener(gsm);
 		new Thread(this).start();
 	}
 	/**
@@ -103,7 +101,7 @@ public class Run extends Canvas implements Runnable{
 		}
 		Graphics g = bs.getDrawGraphics();
 		g.clearRect(0,0,getWidth(), getHeight());
-		gs.draw(g);
+		gsm.draw(g);
 		g.dispose();
 		bs.show();
 	}

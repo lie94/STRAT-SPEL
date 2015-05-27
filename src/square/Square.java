@@ -1,5 +1,7 @@
 package square;
 
+import units.Team;
+
 /**
  * There are 6 different types of squares
  * Type 	| Meaning
@@ -14,8 +16,8 @@ package square;
  *
  */
 public class Square implements Cloneable{
-	public static final int WIDTH = 10, HEIGHT = 10;
 	private int type;
+	private Team t;
 	private int imp = 0;
 	//private GameMap map;
 	public Square(final int type){

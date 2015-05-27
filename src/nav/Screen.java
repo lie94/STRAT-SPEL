@@ -1,7 +1,6 @@
 package nav;
 
 import main.GameMap;
-import square.Square;
 
 
 public class Screen extends Pos{
@@ -59,8 +58,8 @@ public class Screen extends Pos{
 	 * @return
 	 */
 	public int isSquareIn(Pos p){
-		if(	x < p.getX() + Square.WIDTH 		&& x + WIDTH 		> p.getX() &&
-			y < p.getY() + Square.HEIGHT 		&& y + HEIGHT 		> p.getY())
+		if(	x < p.getX() + GameMap.getSquareWidth() 		&& x + WIDTH 		> p.getX() &&
+			y < p.getY() + GameMap.getSquareHeight() 		&& y + HEIGHT 		> p.getY())
 			return 1;
 		if(x < 0 || x > GameMap.MAX_WIDTH - WIDTH){
 			Screen d = clone();
@@ -68,8 +67,8 @@ public class Screen extends Pos{
 				d.setX(GameMap.MAX_WIDTH + d.getX());
 			else
 				d.setX(-GameMap.MAX_WIDTH + d.getX());
-			if(	d.getX() < p.getX() + Square.WIDTH 			&& d.getX() + WIDTH 		> p.getX() &&
-				d.getY() < p.getY() + Square.HEIGHT 		&& d.getY() + HEIGHT 		> p.getY())
+			if(	d.getX() < p.getX() + GameMap.getSquareWidth()		&& d.getX() + WIDTH 		> p.getX() &&
+				d.getY() < p.getY() + GameMap.getSquareHeight() 		&& d.getY() + HEIGHT 		> p.getY())
 				return 2;
 		}
 		return 0;

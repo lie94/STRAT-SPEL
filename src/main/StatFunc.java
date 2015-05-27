@@ -2,7 +2,6 @@ package main;
 
 import java.util.Random;
 
-import nav.Pos;
 import square.Square;
 
 public class StatFunc {
@@ -33,7 +32,7 @@ public class StatFunc {
 		}
 		return temp;
 	}*/
-	public static Square[][] generateMap(int size){
+	public static Square[][] generateMap(int size, GameMap m){
 		Random rn = new Random();
 		Square[][] temp = new Square[160][100];
 		temp = setAllElements(new Square(0),temp);
@@ -42,12 +41,13 @@ public class StatFunc {
 		for(int i = 0; i < points; i++){
 			int x = rn.nextInt(temp.length);
 			int y = rn.nextInt(temp[0].length);
-			int type = 2 + rn.nextInt(4);
-			temp[x][y] = new Square(type);
-			int l_limit = (y + radius + rn.nextInt(radius + 1)) % temp[0].length;
-			if(l_limit > temp[0].length){
-				l_limit = temp[0].length * Square.HEIGHT;
+			//int type = 2 + rn.nextInt(4);
+			int l_limit = (y + 5 + rn.nextInt(radius + 1));
+			if(l_limit > temp[0].length * m.getSquareHeight()){
+				l_limit = temp[0].length * m.getSquareHeight();
 			}
+			int type = getType(y,l_limit,temp[0].length);
+			temp[x][y] = new Square(type);
 			int last_k_limit = x + radius + rn.nextInt(5);
 			int k_limit;
 			int last_k = x;
@@ -65,7 +65,7 @@ public class StatFunc {
 					int k_mod = mod(k,temp.length);
 					temp[k_mod][l_mod] = new Square(type);
 				}
-				System.out.println(k + ", " + l);
+				//System.out.println(k + ", " + l);
 				last_k_limit = k_limit;
 			}
 		}
@@ -94,6 +94,11 @@ public class StatFunc {
 			return -i;
 		return i;
 	}
+	public static double abs(double i){
+		if( i < 0)
+			return -i;
+		return i;
+	}
 	public static Square[][] setAllElements(Square element, Square[][] matrix){
 		for(int i = 0; i < matrix.length; i++){
 			for(int j = 0; j < matrix[0].length; j++){
@@ -102,55 +107,31 @@ public class StatFunc {
 		}
 		return matrix;
 	}
-	private static int terrain(Random rn,int ... surroundingSquareTypes){
-		double proc = (rn.nextInt(99) + 1.0 ) / 100;
-		if(proc > 0.90){
-			return rn.nextInt(6);
+	public static double avrage(int ... numbers){
+		double sum = 0;
+		for(int i : numbers){
+			sum += i;
 		}
-		int[] weights = new int[6];
-		for(int i : surroundingSquareTypes){
-			weights[i]++;
-		}
-		double sum = StatFunc.sum(weights);
-		if(weights[0] / (double) sum > 0.5){
-			proc = rn.nextInt(5);
-			if(proc > 0){
-				return 0;
-			}else{
-				return rn.nextInt(6);
-			}
-		}
-		return rn.nextInt(6);
+		return sum/numbers.length;
 	}
-	private static Square generateTerrain(final int i, final int j, Random rn, Square[][] temp){
-		int type = 0;
-		if(i == 0){
-			if(j == 0){
-				type = rn.nextInt(6);
-			}else{
-				type = terrain(rn,temp[i][j - 1].getType());
+	private static int getType(int y, int y_end, int y_max){
+		double temp = avrage(y,y_end);
+		temp = 2 * abs((y_max / 2.0) - temp) / y_max;
+		Random rn = new Random();
+		if(temp > 0.85){
+			if(temp < 0.90 && rn.nextInt(2) == 0){
+				return 5; //TUNDRA
 			}
-		}else if(i != temp.length - 1){
-			if(j == 0)
-				type = terrain(rn,temp[i - 1][j].getType());
-			else{
-				if(j != temp[0].length - 1){
-					type = terrain(rn,temp[i - 1][j].getType(), temp[i - 1][j - 1].getType(), temp[i][j - 1].getType(), temp[i - 1][j + 1].getType());
-				}else
-					type = terrain(rn,temp[i - 1][j].getType(), temp[i - 1][j - 1].getType(), temp[i][j - 1].getType());
+			return 3; //ICE
+		}else if(temp > 0.40){
+			if(temp < 0.60 && rn.nextInt(2) == 0){
+				return 2;
 			}
+			return 5;
+		}else if(temp < 0.15 && rn.nextInt(2) == 0){
+			return 4;
 		}else{
-			if(j == 0){
-				type = terrain(rn,temp[i - 1][j].getType(),temp[0][0].getType());
-			}else{
-				if(j != temp[0].length - 1)
-					type = terrain(rn,temp[i - 1][j].getType(), temp[i - 1][j - 1].getType(), temp[i][j - 1].getType(), temp[i - 1][j + 1].getType(),
-							temp[0][j].getType(), temp[0][j - 1].getType(), temp[0][j + 1].getType());
-				else
-					type = terrain(rn,temp[i - 1][j].getType(), temp[i - 1][j - 1].getType(), temp[i][j - 1].getType(),
-							temp[0][j].getType(), temp[0][j - 1].getType());
-			}
+			return 2;
 		}
-		return new Square(type);
 	}
 }

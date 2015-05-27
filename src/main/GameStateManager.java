@@ -3,19 +3,21 @@ package main;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import nav.Screen;
 
-public class GameStateManager implements KeyListener, MouseListener, Refresh{
+public class GameStateManager implements KeyListener, Refresh, MouseWheelListener{
 	private GameState gs;
-	private Screen s;
 	private boolean moveScreen[];
-	public GameStateManager(GameState gs, Screen s){
-		this.gs = gs;
-		this.s = s;
+	private GameMap m;
+	public static Screen s;
+	public GameStateManager(){
+		this.gs = new GameState();
+		m = gs.getMap();
 		moveScreen = new boolean[4];
+		s = new Screen();
 	}
 	public void update(){
 		gs.update();
@@ -28,35 +30,6 @@ public class GameStateManager implements KeyListener, MouseListener, Refresh{
 	public void draw(Graphics g){
 		gs.draw(g);
 	}
-	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		
-	}
-
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		int code = arg0.getKeyCode();
@@ -103,6 +76,16 @@ public class GameStateManager implements KeyListener, MouseListener, Refresh{
 	public void newTurn() {
 		// TODO Auto-generated method stub
 		
+	}
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent arg0) {
+		int move = 2;
+		switch(arg0.getWheelRotation()){
+		case -1: //UP
+			m.setSquareDim(m.getSquareWidth() + move, m.getSquareHeight() + move);
+		case 1: //DOWN
+			m.setSquareDim(m.getSquareWidth() - move, m.getSquareHeight() - move);
+		}
 	}
 
 }
