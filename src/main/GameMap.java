@@ -3,7 +3,6 @@ package main;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -25,7 +24,7 @@ public class GameMap implements Refresh{
 		this.s = s;
 		this.size = size;
 		this.type = type;
-		squares = generateMap();
+		squares = StatFunc.generateMap(size);
 		MAX_WIDTH = squares.length * Square.WIDTH;
 		MAX_HEIGHT = squares[0].length * Square.HEIGHT;
 		try {
@@ -118,77 +117,6 @@ public class GameMap implements Refresh{
 	}
 	public Pos getPosOfSquare(int i, int j){
 		return new Pos(Square.WIDTH * i, Square.HEIGHT * j);
-	}
-	private Square[][] generateMap(){
-		Square[][] temp;
-		Random rn = new Random();
-		switch(size){
-		case 0:
-			temp = new Square[36][20];
-			break;
-		case 1:
-			temp = new Square[160][100];
-			break;
-		default:
-			temp = new Square[72][36];
-		}
-		for(int i = 0; i < temp.length; i++){
-			for(int j = 0; j < temp[0].length; j++){
-				temp[i][j] = generateTerrain(i,j,rn,temp); 
-			}
-		}
-		return temp;
-	}
-	private Square generateTerrain(final int i, final int j, Random rn, Square[][] temp){
-		int type = 0;
-		if(i == 0){
-			if(j == 0){
-				type = rn.nextInt(6);
-			}else{
-				type = terrain(rn,temp[i][j - 1].getType());
-			}
-		}else if(i != temp.length - 1){
-			if(j == 0)
-				type = terrain(rn,temp[i - 1][j].getType());
-			else{
-				if(j != temp[0].length - 1){
-					type = terrain(rn,temp[i - 1][j].getType(), temp[i - 1][j - 1].getType(), temp[i][j - 1].getType(), temp[i - 1][j + 1].getType());
-				}else
-					type = terrain(rn,temp[i - 1][j].getType(), temp[i - 1][j - 1].getType(), temp[i][j - 1].getType());
-			}
-		}else{
-			if(j == 0){
-				type = terrain(rn,temp[i - 1][j].getType(),temp[0][0].getType());
-			}else{
-				if(j != temp[0].length - 1)
-					type = terrain(rn,temp[i - 1][j].getType(), temp[i - 1][j - 1].getType(), temp[i][j - 1].getType(), temp[i - 1][j + 1].getType(),
-							temp[0][j].getType(), temp[0][j - 1].getType(), temp[0][j + 1].getType());
-				else
-					type = terrain(rn,temp[i - 1][j].getType(), temp[i - 1][j - 1].getType(), temp[i][j - 1].getType(),
-							temp[0][j].getType(), temp[0][j - 1].getType());
-			}
-		}
-		return new Square(type,this);
-	}
-	private int terrain(Random rn,int ... surroundingSquareTypes){
-		double proc = (rn.nextInt(99) + 1.0 ) / 100;
-		if(proc > 0.90){
-			return rn.nextInt(6);
-		}
-		int[] weights = new int[6];
-		for(int i : surroundingSquareTypes){
-			weights[i]++;
-		}
-		double sum = StatFunc.sum(weights);
-		if(weights[0] / (double) sum > 0.5){
-			proc = rn.nextInt(5);
-			if(proc > 0){
-				return 0;
-			}else{
-				return rn.nextInt(6);
-			}
-		}
-		return rn.nextInt(6);
 	}
 	@Override
 	public void newTurn() {

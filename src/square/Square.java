@@ -1,7 +1,5 @@
 package square;
 
-import main.GameMap;
-
 /**
  * There are 6 different types of squares
  * Type 	| Meaning
@@ -15,12 +13,12 @@ import main.GameMap;
  * @author Felix
  *
  */
-public class Square {
-	public static final int WIDTH = 10, HEIGHT = 2 * WIDTH;
+public class Square implements Cloneable{
+	public static final int WIDTH = 10, HEIGHT = 10;
 	private int type;
 	private int imp = 0;
 	//private GameMap map;
-	public Square(final int type, GameMap map){
+	public Square(final int type){
 		if(type < 0 || type > 5){
 			throw new IllegalArgumentException("A square can only be of type 0-5. type = " + type);
 		}

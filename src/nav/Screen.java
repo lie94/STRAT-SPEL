@@ -1,7 +1,6 @@
 package nav;
 
 import main.GameMap;
-import main.Run;
 import square.Square;
 
 
@@ -64,7 +63,7 @@ public class Screen extends Pos{
 			y < p.getY() + Square.HEIGHT 		&& y + HEIGHT 		> p.getY())
 			return 1;
 		if(x < 0 || x > GameMap.MAX_WIDTH - WIDTH){
-			Screen d = this.clone();
+			Screen d = clone();
 			if(d.getX() < 0)
 				d.setX(GameMap.MAX_WIDTH + d.getX());
 			else

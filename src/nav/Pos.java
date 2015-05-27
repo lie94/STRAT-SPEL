@@ -1,6 +1,6 @@
 package nav;
 
-public class Pos {
+public class Pos implements Cloneable{
 	protected double x,y;
 	public Pos(int x, int y){
 		this.x = x;
@@ -49,8 +49,5 @@ public class Pos {
 	}
 	public String toString(){
 		return "(" + x + ", " + y + ")";
-	}
-	public Pos clone(){
-		return new Pos(x,y);
 	}
 }
