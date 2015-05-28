@@ -1,4 +1,6 @@
-package main;
+package gamestate;
+
+import intrface.Refresh;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -6,6 +8,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import main.GameMap;
 import nav.Screen;
 
 public class GameStateManager implements KeyListener, Refresh, MouseWheelListener{
@@ -14,10 +17,13 @@ public class GameStateManager implements KeyListener, Refresh, MouseWheelListene
 	private GameMap m;
 	public static Screen s;
 	public GameStateManager(){
-		this.gs = new GameState();
+		s = new Screen();
+		this.gs = new GameState(s);
 		m = gs.getMap();
 		moveScreen = new boolean[4];
-		s = new Screen();
+	}
+	public GameMap getMap(){
+		return m;
 	}
 	public void update(){
 		gs.update();
@@ -82,9 +88,11 @@ public class GameStateManager implements KeyListener, Refresh, MouseWheelListene
 		int move = 2;
 		switch(arg0.getWheelRotation()){
 		case -1: //UP
-			m.setSquareDim(m.getSquareWidth() + move, m.getSquareHeight() + move);
+			m.setSquareDim(GameMap.getSquareWidth() + move, GameMap.getSquareHeight() + move);
+			break;
 		case 1: //DOWN
-			m.setSquareDim(m.getSquareWidth() - move, m.getSquareHeight() - move);
+			m.setSquareDim(GameMap.getSquareWidth() - move, GameMap.getSquareHeight() - move);
+			break;
 		}
 	}
 

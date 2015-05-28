@@ -1,13 +1,18 @@
-package main;
+package gamestate;
+
+import intrface.Refresh;
 
 import java.awt.Graphics;
+
+import main.GameMap;
 import nav.Screen;
 
 public class GameState implements Refresh{
 	private GameMap map;
 	private Screen s;
-	GameState(){
-		map = new GameMap(1,1);
+	GameState(Screen s){
+		map = new GameMap(1,1,s);
+		this.s = s;
 	}
 	public void update(){
 		

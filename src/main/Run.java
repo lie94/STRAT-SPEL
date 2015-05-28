@@ -1,4 +1,6 @@
 package main;
+import gamestate.GameStateManager;
+
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Dimension;

@@ -1,11 +1,12 @@
 package nav;
 
 import main.GameMap;
+import main.StatFunc;
 
 
 public class Screen extends Pos{
 	public static final double SPEED = 10;
-	public static double WIDTH = 1280 + 10, HEIGHT = 720 + 10;
+	public static double WIDTH = 1280 + 1280 * 0.1, HEIGHT = 720 + 720 * 0.1;
 	public Screen(int width, int height){
 		WIDTH = width;
 		HEIGHT = height;
@@ -21,6 +22,10 @@ public class Screen extends Pos{
 	public Screen(){
 		x = 0;
 		y = 0;
+	}
+	public void setPos(Pos p){
+		x = p.getX();
+		y = p.getY();
 	}
 	public void move(int dir, double speed){
 		switch(dir){
@@ -43,6 +48,9 @@ public class Screen extends Pos{
 				x = GameMap.MAX_WIDTH - WIDTH;
 			break;
 		}
+	}
+	public Pos getRelativeMiddle(){
+		return new Pos(StatFunc.avg(x,x + WIDTH)  / GameMap.MAX_WIDTH, StatFunc.avg(y,y+HEIGHT) / GameMap.MAX_HEIGHT);
 	}
 	public void move(int dir){
 		move(dir,SPEED);

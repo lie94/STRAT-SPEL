@@ -12,27 +12,7 @@ public class StatFunc {
 		}
 		return sum;
 	}
-	/*public static Square[][] generateMap(int size){
-		Square[][] temp;
-		Random rn = new Random();
-		switch(size){
-		case 0:
-			temp = new Square[36][20];
-			break;
-		case 1:
-			temp = new Square[160][100];
-			break;
-		default:
-			temp = new Square[72][36];
-		}
-		for(int i = 0; i < temp.length; i++){
-			for(int j = 0; j < temp[0].length; j++){
-				temp[i][j] = generateTerrain(i,j,rn,temp); 
-			}
-		}
-		return temp;
-	}*/
-	public static Square[][] generateMap(int size, GameMap m){
+	public static Square[][] generateMap(int size){
 		Random rn = new Random();
 		Square[][] temp = new Square[160][100];
 		temp = setAllElements(new Square(0),temp);
@@ -43,8 +23,8 @@ public class StatFunc {
 			int y = rn.nextInt(temp[0].length);
 			//int type = 2 + rn.nextInt(4);
 			int l_limit = (y + 5 + rn.nextInt(radius + 1));
-			if(l_limit > temp[0].length * m.getSquareHeight()){
-				l_limit = temp[0].length * m.getSquareHeight();
+			if(l_limit > temp[0].length * GameMap.getSquareHeight()){
+				l_limit = temp[0].length * GameMap.getSquareHeight();
 			}
 			int type = getType(y,l_limit,temp[0].length);
 			temp[x][y] = new Square(type);
@@ -133,5 +113,12 @@ public class StatFunc {
 		}else{
 			return 2;
 		}
+	}
+	public static double avg(double ... numbers) {
+		double sum = 0;
+		for(double d : numbers){
+			sum += d;
+		}
+		return sum / numbers.length;
 	}
 }

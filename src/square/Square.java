@@ -33,6 +33,9 @@ public class Square implements Cloneable{
 	public int getImp(){
 		return imp;
 	}
+	public Team getTeam(){
+		return t;
+	}
 	public void setImp(int imp){
 		this.imp = imp;
 	}

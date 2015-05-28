@@ -1,4 +1,4 @@
-package main;
+package intrface;
 
 import java.awt.Graphics;
 

@@ -1,5 +1,8 @@
 package main;
 
+import gamestate.GameStateManager;
+import intrface.Refresh;
+
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -13,28 +16,28 @@ import square.Square;
 public class GameMap implements Refresh{
 	private Square[][] squares;
 	public static int MAX_WIDTH, MAX_HEIGHT;
-	private static int square_width, square_height;
+	private static int SQUARE_WIDTH,SQUARE_HEIGHT;
 	private final int size;
 	private final int type;
-	//private Screen s;
+	private Screen s;
 	private BufferedImage tiles;
-	public GameMap(final int size, final int type){
+	public GameMap(final int size, final int type, Screen s){
 		if(size < 0 || size > 5){
 			throw new IllegalArgumentException("Size must be larger than 0 and smaller than 5");
 		}
 		this.size = size;
 		this.type = type;
-		square_width = 10; 
-		square_height = 10;
-		squares = StatFunc.generateMap(size,this);
-		MAX_WIDTH = squares.length * square_width;
-		MAX_HEIGHT = squares[0].length * square_height;
+		this.s = s;
+		SQUARE_WIDTH = 10; 
+		SQUARE_HEIGHT = 10;
+		squares = StatFunc.generateMap(size);
+		MAX_WIDTH = squares.length * SQUARE_WIDTH;
+		MAX_HEIGHT = squares[0].length * SQUARE_HEIGHT;
 		try {
 			tiles = ImageIO.read(getClass().getResourceAsStream("/res/tiles.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//System.out.println(toString());
 	}
 	public int getType(){
 		return type;
@@ -70,7 +73,6 @@ public class GameMap implements Refresh{
 	public void draw(Graphics g) {
 		Pos p, temp;
 		int isIn;
-		System.out.println(square_width + ", " + square_height);
 		for(int i = 0; i < squares.length; i++){
 			for(int j = 0; j < squares[0].length; j++){
 				p = getPosOfSquare(i,j);
@@ -115,35 +117,39 @@ public class GameMap implements Refresh{
 		}
 	}
 	public static int getSquareWidth(){
-		return square_width;
+		return SQUARE_WIDTH;
 	}
 	public static int getSquareHeight(){
-		return square_height;
-	}
-	public void setSquareDim(int square_width, int square_height){
-		if(square_height * squares[0].length < Screen.HEIGHT)
-			return;
-		if(square_width < 1)
-			square_width = 1;
-		if(square_height < 1)
-			square_height = 1;
-		GameMap.square_width = square_width;
-		GameMap.square_height = square_height;
-		refreshMax();
-	}
-	private void refreshMax(){
-		MAX_WIDTH = squares.length * square_width;
-		MAX_HEIGHT = squares[0].length * square_height;
+		return SQUARE_HEIGHT;
 	}
 	public static Pos typeToMapPart(Square s){
 		return typeToMapPart(s.getType());
 	}
 	public Pos getPosOfSquare(int i, int j){
-		return new Pos(square_width * i, square_height * j);
+		return new Pos(SQUARE_WIDTH * i, SQUARE_HEIGHT * j);
 	}
 	@Override
 	public void newTurn() {
 		// TODO Auto-generated method stub
 		
+	}
+	public void setSquareDim(int square_width, int square_height){
+		if(square_height * squares[0].length * 0.9 < Screen.HEIGHT || square_width * squares.length * 0.9 < Screen.WIDTH)
+			return;
+		if(square_width < 1)
+			square_width = 1;
+		if(square_height < 1)
+			square_height = 1;
+		Pos oldMiddle = s.getRelativeMiddle();
+		GameMap.SQUARE_WIDTH = square_width;
+		GameMap.SQUARE_HEIGHT = square_height;
+		refreshMax();
+		System.out.println(oldMiddle);
+		s.setPos(new Pos(oldMiddle.getX() * MAX_WIDTH - Screen.WIDTH / 2, oldMiddle.getY() * MAX_HEIGHT - Screen.HEIGHT / 2));
+		System.out.println(s.getRelativeMiddle());
+	}
+	private void refreshMax(){
+		MAX_WIDTH = squares.length * SQUARE_WIDTH;
+		MAX_HEIGHT = squares[0].length * SQUARE_HEIGHT;
 	}
 }
