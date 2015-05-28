@@ -9,21 +9,20 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import main.GameMap;
+import main.Run;
+import main.StatFunc;
 import nav.Screen;
 
 public class GameStateManager implements KeyListener, Refresh, MouseWheelListener{
 	private GameState gs;
 	private boolean moveScreen[];
-	private GameMap m;
 	public static Screen s;
-	public GameStateManager(){
+	private Run r;
+	public GameStateManager(Run r){
+		this.r = r;
 		s = new Screen();
 		this.gs = new GameState(s);
-		m = gs.getMap();
 		moveScreen = new boolean[4];
-	}
-	public GameMap getMap(){
-		return m;
 	}
 	public void update(){
 		gs.update();
@@ -51,6 +50,10 @@ public class GameStateManager implements KeyListener, Refresh, MouseWheelListene
 			break;
 		case 37:
 			moveScreen[3] = true;
+			break;
+		case KeyEvent.VK_ESCAPE:
+			StatFunc.save(gs.getMap(),"test");
+			r.stop();
 			break;
 		}
 	}
@@ -88,10 +91,10 @@ public class GameStateManager implements KeyListener, Refresh, MouseWheelListene
 		int move = 2;
 		switch(arg0.getWheelRotation()){
 		case -1: //UP
-			m.setSquareDim(GameMap.getSquareWidth() + move, GameMap.getSquareHeight() + move);
+			gs.getMap().setSquareDim(GameMap.getSquareWidth() + move, GameMap.getSquareHeight() + move);
 			break;
 		case 1: //DOWN
-			m.setSquareDim(GameMap.getSquareWidth() - move, GameMap.getSquareHeight() - move);
+			gs.getMap().setSquareDim(GameMap.getSquareWidth() - move, GameMap.getSquareHeight() - move);
 			break;
 		}
 	}

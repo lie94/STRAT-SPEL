@@ -16,7 +16,7 @@ public class Run extends Canvas implements Runnable{
 	private static final int TARGET_FPS = 60;
 	private final String NAME = "STRAT-GAME";
 	private final int MAXW = 1280, MAXH = 720;
-	JFrame frame; //Can be showed in package
+	public JFrame frame; //Can be showed in package
 	private boolean running;
 	private GameStateManager gsm;
 	/**
@@ -59,9 +59,7 @@ public class Run extends Canvas implements Runnable{
 	 */
 	public synchronized void start(){
 		running = true;
-		//Screen s = new Screen();
-		//gs = new GameState();
-		gsm = new GameStateManager();
+		gsm = new GameStateManager(this);
 		addKeyListener((KeyListener) gsm);
 		addMouseWheelListener(gsm);
 		new Thread(this).start();

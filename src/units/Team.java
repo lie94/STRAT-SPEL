@@ -1,6 +1,8 @@
 package units;
 
-public class Team {
+import intrface.SaveAble;
+
+public class Team implements SaveAble {
 	private Unit[] team = new Unit[3];
 	public Team(){}
 	public boolean addUnit(Unit u){
@@ -34,5 +36,9 @@ public class Team {
 				}
 			}
 		}
+	}
+	@Override
+	public String toSaveFormat(StringBuilder s) {
+		return null;
 	}
 }

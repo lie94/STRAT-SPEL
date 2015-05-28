@@ -2,6 +2,7 @@ package main;
 
 import gamestate.GameStateManager;
 import intrface.Refresh;
+import intrface.SaveAble;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -13,7 +14,7 @@ import nav.Pos;
 import nav.Screen;
 import square.Square;
 
-public class GameMap implements Refresh{
+public class GameMap implements Refresh,SaveAble{
 	private Square[][] squares;
 	public static int MAX_WIDTH, MAX_HEIGHT;
 	private static int SQUARE_WIDTH,SQUARE_HEIGHT;
@@ -144,12 +145,26 @@ public class GameMap implements Refresh{
 		GameMap.SQUARE_WIDTH = square_width;
 		GameMap.SQUARE_HEIGHT = square_height;
 		refreshMax();
-		System.out.println(oldMiddle);
 		s.setPos(new Pos(oldMiddle.getX() * MAX_WIDTH - Screen.WIDTH / 2, oldMiddle.getY() * MAX_HEIGHT - Screen.HEIGHT / 2));
-		System.out.println(s.getRelativeMiddle());
 	}
 	private void refreshMax(){
 		MAX_WIDTH = squares.length * SQUARE_WIDTH;
 		MAX_HEIGHT = squares[0].length * SQUARE_HEIGHT;
+	}
+	@Override
+	public String toSaveFormat(StringBuilder s) {
+		String new_line = System.getProperty("line.separator");
+		s.append("SX LENGTH: " + squares.length);
+		s.append(new_line);
+		s.append("SY LENGTH: " + squares[0].length);
+		s.append(new_line);
+		for(int x = 0; x < squares.length; x++){
+			for(int y = 0; y < squares[0].length; y++){
+				s.append("(" + x + ", " + y + "): ");
+				squares[x][y].toSaveFormat(s);
+				s.append(new_line);
+			}
+		}
+		return s.toString();
 	}
 }
