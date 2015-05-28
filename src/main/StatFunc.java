@@ -1,9 +1,11 @@
 package main;
 
+import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Random;
 
+import nav.Pos;
 import square.Square;
 
 public class StatFunc {
@@ -156,6 +158,43 @@ public class StatFunc {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		
+	}
+	public static Color getColor(int i){
+		switch(i){
+		case 0:
+			return new Color(33,60,255);
+		case 1:
+			return new Color(81,188,255);
+		case 2:
+			return new Color(38,127,1);
+		case 3:
+			return new Color(127,255,255);
+		case 4:
+			return new Color(245,254,145);
+		case 5:
+			return new Color(128,128,128);
+		}
+		return null;
+	}
+	public static Pos typeToMapPart(int type){
+		switch(type){
+		case 0:
+			return new Pos(0,0);
+		case 1:
+			return new Pos(505,0);
+		case 2:
+			return new Pos(1010,0);
+		case 3:
+			return new Pos(0,505);
+		case 4:
+			return new Pos(505,505);
+		case 5:
+			return new Pos(1010,505);
+		default:
+			return null;
+		}
+	}
+	public static Pos typeToMapPart(Square s){
+		return typeToMapPart(s.getType());
 	}
 }

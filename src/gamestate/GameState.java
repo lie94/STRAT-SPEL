@@ -18,7 +18,7 @@ public class GameState implements Refresh{
 		this.s = s;
 	}
 	public void update(){
-		
+		map.update();
 	}
 	public void draw(Graphics g){
 		map.draw(g);

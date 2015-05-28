@@ -1,8 +1,5 @@
 package gamestate;
 
-import intrface.Refresh;
-
-import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
@@ -13,7 +10,7 @@ import main.Run;
 import main.StatFunc;
 import nav.Screen;
 
-public class GameStateManager implements KeyListener, Refresh, MouseWheelListener{
+public class GameStateManager implements KeyListener, MouseWheelListener{
 	private GameState gs;
 	private boolean moveScreen[];
 	private Run r;
@@ -33,9 +30,6 @@ public class GameStateManager implements KeyListener, Refresh, MouseWheelListene
 			}
 		}
 		changeSquare(mouseWheelRot);
-	}
-	public void draw(Graphics g){
-		gs.draw(g);
 	}
 	@Override
 	public void keyPressed(KeyEvent arg0) {
@@ -84,19 +78,23 @@ public class GameStateManager implements KeyListener, Refresh, MouseWheelListene
 	public void keyTyped(KeyEvent arg0) {
 	}
 	@Override
-	public void newTurn() {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
 	public void mouseWheelMoved(MouseWheelEvent arg0) {
 		mouseWheelRot =  arg0.getWheelRotation();
 	}
 	private void changeSquare(int i){
-		int move = 2;
-		if(mouseWheelRot != 0)
-			gs.getMap().setSquareDim(GameMap.getSquareWidth() - i *  move, GameMap.getSquareHeight() - i * move);
+		if(mouseWheelRot != 0){
+			if(i == -1){
+				gs.getMap().setSquareDim(GameMap.getSquareWidth() * 1.2, GameMap.getSquareHeight() * 1.2);
+			}else{
+				gs.getMap().setSquareDim(GameMap.getSquareWidth() * 0.8, GameMap.getSquareHeight() * 0.8);
+			}
+			//gs.getMap().setSquareDim(GameMap.getSquareWidth() - i *  move, GameMap.getSquareHeight() - i * move);
+		}
+			
 		mouseWheelRot = 0;
+	}
+	public GameState getGameState() {
+		return gs;
 	}
 
 }
