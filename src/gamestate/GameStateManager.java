@@ -18,7 +18,7 @@ public class GameStateManager implements KeyListener, MouseWheelListener{
 	public static Screen s;
 	public GameStateManager(Run r){
 		this.r = r;
-		s = new Screen();
+		s = new Screen(r.frame.getWidth(),r.frame.getHeight());
 		this.gs = new GameState(s,false);
 		moveScreen = new boolean[4];
 	}

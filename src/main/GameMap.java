@@ -129,6 +129,9 @@ public class GameMap implements Refresh,SaveAble{
 		MAX_WIDTH = squares.length * SQUARE_WIDTH;
 		MAX_HEIGHT = squares[0].length * SQUARE_HEIGHT;
 	}
+	public Square[][] getSquares(){
+		return squares;
+	}
 	@Override
 	public String toSaveFormat(StringBuilder s) {
 		String new_line = System.getProperty("line.separator");

@@ -1,11 +1,13 @@
 package main;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Random;
 
 import nav.Pos;
+import nav.Screen;
 import square.Square;
 
 public class StatFunc {
@@ -196,5 +198,41 @@ public class StatFunc {
 	}
 	public static Pos typeToMapPart(Square s){
 		return typeToMapPart(s.getType());
+	}
+	private static Color avrageColor(Square[][] squares, int x, int y){
+		int [] arr = new int[6];
+		for(int i = (int) ((x * 10) / Screen.WIDTH); i < (int) (((x + 1) * 10 ) / Screen.WIDTH); i++){
+			for(int j = (int) ((y * 10) / Screen.HEIGHT); j < (int) (((y + 1) * 10 ) / Screen.HEIGHT); j++){
+				System.out.println("SWAG");
+				//DEN GÅR ALDRIG IN I LOOPEN
+				arr[squares[x][y].getType()]++;
+			}
+		}
+		int largest = 0;
+		int index = -1;
+		for(int i = 0; i < arr.length; i++){
+			if(arr[i] > largest){
+				index = i;
+				largest = arr[i];
+			}
+		}
+		return getColor(index);
+	}
+	public static BufferedImage getMiniMap(GameMap map) {
+		Square[][] squares = map.getSquares();
+		BufferedImage temp = new BufferedImage((int) Screen.WIDTH / 10, (int) Screen.HEIGHT / 10, BufferedImage.TYPE_INT_RGB);
+		for(int x = 0; x < Screen.WIDTH / 10; x++){
+			for(int y = 0; y < Screen.HEIGHT / 10; y++){
+				temp.setRGB(x, y, avrageColor(squares,x,y).getRGB());
+			}
+		}
+		return temp;
+	}
+	public static String arrToString(int arr[]){
+		StringBuilder s = new StringBuilder();
+		for(int i = 0; i < arr.length; i++){
+			s.append(arr[i] + ", ");
+		}
+		return s.toString();
 	}
 }
