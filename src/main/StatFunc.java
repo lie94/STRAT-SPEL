@@ -201,10 +201,8 @@ public class StatFunc {
 	}
 	private static Color avrageColor(Square[][] squares, int x, int y){
 		int [] arr = new int[6];
-		for(int i = (int) ((x * 10) / Screen.WIDTH); i < (int) (((x + 1) * 10 ) / Screen.WIDTH); i++){
-			for(int j = (int) ((y * 10) / Screen.HEIGHT); j < (int) (((y + 1) * 10 ) / Screen.HEIGHT); j++){
-				System.out.println("SWAG");
-				//DEN GÅR ALDRIG IN I LOOPEN
+		for(int i = (int) ((x * squares.length) / (Screen.WIDTH / 10)) ; i < (int) (((x + 1) * squares.length) / (Screen.WIDTH / 10)); i++){
+			for(int j = (int) ((y * squares[0].length) / (Screen.HEIGHT / 10)) ; j < (int) (((y + 1) * squares[0].length)/ (Screen.HEIGHT / 10)) ; j++){
 				arr[squares[x][y].getType()]++;
 			}
 		}
@@ -221,8 +219,8 @@ public class StatFunc {
 	public static BufferedImage getMiniMap(GameMap map) {
 		Square[][] squares = map.getSquares();
 		BufferedImage temp = new BufferedImage((int) Screen.WIDTH / 10, (int) Screen.HEIGHT / 10, BufferedImage.TYPE_INT_RGB);
-		for(int x = 0; x < Screen.WIDTH / 10; x++){
-			for(int y = 0; y < Screen.HEIGHT / 10; y++){
+		for(int x = 0; x < temp.getWidth(); x++){
+			for(int y = 0; y < temp.getHeight(); y++){
 				temp.setRGB(x, y, avrageColor(squares,x,y).getRGB());
 			}
 		}

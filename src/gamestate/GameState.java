@@ -26,7 +26,8 @@ public class GameState implements Refresh{
 	}
 	public void draw(Graphics g){
 		map.draw(g);
-		//g.drawImage(miniMap, (int) Screen.WIDTH / 20, (int) Screen.WIDTH / 20, null);
+		//g.drawImage(miniMap, (int) Screen.WIDTH / 20, (int) (Screen.HEIGHT / 20), null);
+		g.drawImage(miniMap, (int) Screen.WIDTH / 20, (int) (Screen.HEIGHT -  Screen.HEIGHT / 20 - miniMap.getWidth()), null);
 	}
 	public Screen getScreen(){
 		return s;
