@@ -199,29 +199,40 @@ public class StatFunc {
 	public static Pos typeToMapPart(Square s){
 		return typeToMapPart(s.getType());
 	}
-	private static Color avrageColor(Square[][] squares, int x, int y){
+	private static Color avrageColor(Square[][] squares, int x, int y, int width, int height){
 		int [] arr = new int[6];
-		for(int i = (int) ((x * squares.length) / (Screen.WIDTH / 10)) ; i < (int) (((x + 1) * squares.length) / (Screen.WIDTH / 10)); i++){
-			for(int j = (int) ((y * squares[0].length) / (Screen.HEIGHT / 10)) ; j < (int) (((y + 1) * squares[0].length)/ (Screen.HEIGHT / 10)) ; j++){
-				arr[squares[x][y].getType()]++;
+		if(squares.length == width){
+			return getColor(squares[x][y].getType());
+		}else{
+			System.out.println(squares.length > width);
+			System.out.println(((x + 1 ) * squares.length) / width);
+			for(int i = (int) ((x * squares.length) / width) ; i < (int) (((x + 1) * squares.length) / width); i++){
+				for(int j = (int) ((y * squares[0].length) / height) ; j < (int) (((y + 1) * squares[0].length)/ height) ; j++){
+					System.out.println("SWAG");
+					arr[squares[x][y].getType()]++;
+				}
 			}
-		}
-		int largest = 0;
-		int index = -1;
-		for(int i = 0; i < arr.length; i++){
-			if(arr[i] > largest){
-				index = i;
-				largest = arr[i];
+			int largest = 0;
+			int index = -1;
+			for(int i = 0; i < arr.length; i++){
+				if(arr[i] > largest){
+					index = i;
+					largest = arr[i];
+				}
 			}
+			return getColor(index);
 		}
-		return getColor(index);
 	}
 	public static BufferedImage getMiniMap(GameMap map) {
 		Square[][] squares = map.getSquares();
-		BufferedImage temp = new BufferedImage((int) Screen.WIDTH / 10, (int) Screen.HEIGHT / 10, BufferedImage.TYPE_INT_RGB);
+		BufferedImage temp; 
+		if((int) Screen.WIDTH / 5 > squares.length)
+			temp = new BufferedImage((int) Screen.WIDTH / 5, (int) (Screen.WIDTH / 5) * squares[0].length / squares.length, BufferedImage.TYPE_INT_RGB);
+		else
+			temp = new BufferedImage(squares.length, squares[0].length, BufferedImage.TYPE_INT_RGB);
 		for(int x = 0; x < temp.getWidth(); x++){
 			for(int y = 0; y < temp.getHeight(); y++){
-				temp.setRGB(x, y, avrageColor(squares,x,y).getRGB());
+				temp.setRGB(x, y, avrageColor(squares,x,y,temp.getWidth(),temp.getWidth()).getRGB());
 			}
 		}
 		return temp;

@@ -32,25 +32,28 @@ public class Run extends Canvas implements Runnable{
 	/**
 	 * Initiates the frame and starts the key listener
 	 */
+	@SuppressWarnings("static-access")
 	Run(){
 		
-		setMinimumSize(new Dimension(MAXW,MAXH));
-		setMaximumSize(new Dimension(MAXW,MAXH));
-		setPreferredSize(new Dimension(MAXW,MAXH));
-		
+		//setMinimumSize(new Dimension(MAXW,MAXH));
+		//setMaximumSize(new Dimension(MAXW,MAXH));
+		//setPreferredSize(new Dimension(MAXW,MAXH));
 		frame = new JFrame(NAME);
 		
 		
+		frame.setDefaultLookAndFeelDecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 		
 		frame.setExtendedState(JFrame.NORMAL);
 		
 		frame.add(this,BorderLayout.CENTER);
+		frame.setUndecorated(true);
 		frame.pack();
 		
-		frame.setResizable(false);
+		frame.setResizable(true);
 		frame.setVisible(true);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.toFront();
 		frame.setLocationRelativeTo(null);
 	}
