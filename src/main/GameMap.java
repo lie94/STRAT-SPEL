@@ -29,8 +29,8 @@ public class GameMap implements Refresh,SaveAble{
 		this.size = size;
 		this.type = type;
 		this.s = s;
-		SQUARE_WIDTH = 10; 
-		SQUARE_HEIGHT = 10;
+		SQUARE_WIDTH = 20; 
+		SQUARE_HEIGHT = 20;
 		squares = StatFunc.generateMap(size);
 		MAX_WIDTH = squares.length * SQUARE_WIDTH;
 		MAX_HEIGHT = squares[0].length * SQUARE_HEIGHT;
