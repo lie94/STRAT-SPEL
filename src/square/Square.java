@@ -41,7 +41,6 @@ public class Square implements Cloneable, SaveAble{
 	@Override
 	public String toSaveFormat(StringBuilder s) {
 		s.append(type + ", " + imp);
-		
 		return null;
 	}
 }

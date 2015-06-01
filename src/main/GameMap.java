@@ -18,16 +18,9 @@ public class GameMap implements Refresh,SaveAble{
 	private Square[][] squares;
 	public static int MAX_WIDTH, MAX_HEIGHT;
 	private static int SQUARE_WIDTH,SQUARE_HEIGHT;
-	private final int size;
-	private final int type;
 	private Screen s;
 	private BufferedImage tiles;
-	public GameMap(final int size, final int type, Screen s){
-		if(size < 0 || size > 5){
-			throw new IllegalArgumentException("Size must be larger than 0 and smaller than 5");
-		}
-		this.size = size;
-		this.type = type;
+	public GameMap(final int size, Screen s){
 		this.s = s;
 		SQUARE_WIDTH = 20; 
 		SQUARE_HEIGHT = 20;
@@ -40,11 +33,18 @@ public class GameMap implements Refresh,SaveAble{
 			e.printStackTrace();
 		}
 	}
-	public int getType(){
-		return type;
-	}
-	public int getSize(){
-		return size;
+	public GameMap(final int width, final int height, Screen s){
+		squares = new Square[width][height];
+		this.s = s;
+		SQUARE_WIDTH = 20; 
+		SQUARE_HEIGHT = 20;
+		MAX_WIDTH = squares.length * SQUARE_WIDTH;
+		MAX_HEIGHT = squares[0].length * SQUARE_HEIGHT;
+		try {
+			tiles = ImageIO.read(getClass().getResourceAsStream("/res/tiles.jpg"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	public String toString(){
 		StringBuilder s = new StringBuilder();
@@ -144,7 +144,7 @@ public class GameMap implements Refresh,SaveAble{
 		s.append(new_line);
 		for(int x = 0; x < squares.length; x++){
 			for(int y = 0; y < squares[0].length; y++){
-				s.append("(" + x + ", " + y + "): ");
+				//s.append("(" + x + ", " + y + "): ");
 				squares[x][y].toSaveFormat(s);
 				s.append(new_line);
 			}

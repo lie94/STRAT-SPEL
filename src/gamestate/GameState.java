@@ -5,6 +5,7 @@ import intrface.Refresh;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import main.GameMap;
 import main.StatFunc;
@@ -18,9 +19,13 @@ public class GameState implements Refresh{
 	private int miniMapHeight;
 	GameState(Screen s, boolean loadMap){
 		if(loadMap)
-			map = null;
+			try {
+				map = StatFunc.loadMap("test",s);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		else
-			map = new GameMap(1,1,s);
+			map = new GameMap(1,s);
 		miniMap = StatFunc.getMiniMap(map);
 		miniMapWidth = (int) (Screen.WIDTH / 10);
 		miniMapHeight = (int) (((double) (miniMap.getHeight()) / miniMap.getWidth()) * (Screen.WIDTH / 10));
@@ -38,10 +43,7 @@ public class GameState implements Refresh{
 		int borderthickness = (int) Screen.WIDTH / 160;
 		g.setColor(Color.BLACK);
 		g.fillRect((int) (Screen.WIDTH / 80), (int) (Screen.HEIGHT - miniMapHeight - 2 * borderthickness - Screen.WIDTH / 80), miniMapWidth + 2 * borderthickness, miniMapHeight + 2 * borderthickness);
-		g.drawImage(miniMap, (int) (Screen.WIDTH / 80) + borderthickness, (int) (Screen.HEIGHT - miniMapHeight - borderthickness - Screen.WIDTH / 80),miniMapWidth,miniMapHeight, null);
-		//g.drawImage(miniMap, (int) Screen.WIDTH / 20, (int) (Screen.HEIGHT / 20), null);
-		
-	
+		g.drawImage(miniMap, (int) (Screen.WIDTH / 80) + borderthickness, (int) (Screen.HEIGHT - miniMapHeight - borderthickness - Screen.WIDTH / 80),miniMapWidth,miniMapHeight, null);	
 	}
 	public Screen getScreen(){
 		return s;
