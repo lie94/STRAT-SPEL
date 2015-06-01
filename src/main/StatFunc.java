@@ -1,11 +1,14 @@
 package main;
 
+import gamestate.GameState;
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Random;
 
@@ -240,17 +243,21 @@ public class StatFunc {
 	public static void save(GameMap m, String savename){
 		PrintWriter out;
 		try {
-			out = new PrintWriter("saves/" + savename + ".txt");
+			out = new PrintWriter("src/saves/" + savename + ".txt");
 			out.print(m.toSaveFormat(new StringBuilder()));
 			out.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
-	@SuppressWarnings("resource")
-	public static GameMap loadMap(final String url, Screen s) throws IOException{
+	public static GameMap loadMap(final String url, Screen s, GameState g) throws IOException{
 		BufferedReader in;
-		in = new BufferedReader(new FileReader("saves/" + url + ".txt"));
+		//in = new BufferedReader(new FileReader(getClass().getResourceAsStream("/saves/" + url + ".txt")));
+		in = new BufferedReader(	new InputStreamReader(
+		        g.getClass().getResourceAsStream("/saves/" + url + ".txt")));
+				
+				
+		//in = new BufferedReader(new FileReader("saves/" + url + ".txt"));
 		String width = in.readLine().replaceAll(".*:\\s+", "");
 		String height = in.readLine().replaceAll(".*:\\s+", "");
 		GameMap out = new GameMap(Integer.parseInt(width),Integer.parseInt(height),s);

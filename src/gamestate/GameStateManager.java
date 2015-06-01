@@ -7,6 +7,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import main.GameMap;
 import main.Run;
@@ -24,7 +26,13 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 	public GameStateManager(Run r){
 		this.r = r;
 		s = new Screen((int) r.frame.getWidth(),r.frame.getHeight());
-		this.gs = new GameState(s,true); //CHANGE TO FALSE TO GENERATE A NEW MAP
+		try {
+			this.gs = new GameState(s,true);//CHANGE TO FALSE TO GENERATE A NEW MAP
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			r.frame.dispatchEvent(new WindowEvent(r.frame, WindowEvent.WINDOW_CLOSING));
+		} 
 		moveScreen = new boolean[4];
 	}
 	public void update(){
@@ -62,6 +70,12 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 			StatFunc.save(gs.getMap(),"test");
 			r.stop();
 			break;
+		case KeyEvent.VK_SPACE:
+			try {
+				gs = new GameState(s,false);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -21,18 +21,14 @@ public class GameMap implements Refresh,SaveAble{
 	private static int SQUARE_WIDTH,SQUARE_HEIGHT;
 	private Screen s;
 	private BufferedImage tiles;
-	public GameMap(final int size, Screen s){
+	public GameMap(final int size, Screen s) throws IOException{
 		this.s = s;
 		SQUARE_WIDTH = STD_MAX_WIDTH; 
 		SQUARE_HEIGHT = STD_MAX_HEIGHT;
 		squares = StatFunc.generateMap(size);
 		MAX_WIDTH = squares.length * SQUARE_WIDTH;
 		MAX_HEIGHT = squares[0].length * SQUARE_HEIGHT;
-		try {
-			tiles = ImageIO.read(getClass().getResourceAsStream("/res/tiles.jpg"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		tiles = ImageIO.read(getClass().getResourceAsStream("/res/tiles.jpg"));
 	}
 	public GameMap(final int width, final int height, Screen s){
 		squares = new Square[width][height];

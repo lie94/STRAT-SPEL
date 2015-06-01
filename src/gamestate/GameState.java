@@ -17,13 +17,9 @@ public class GameState implements Refresh{
 	private BufferedImage miniMap;
 	private int miniMapWidth; 
 	private int miniMapHeight;
-	GameState(Screen s, boolean loadMap){
+	GameState(Screen s, boolean loadMap) throws IOException{
 		if(loadMap)
-			try {
-				map = StatFunc.loadMap("test",s);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			map = StatFunc.loadMap("test",s,this);
 		else
 			map = new GameMap(1,s);
 		miniMap = StatFunc.getMiniMap(map);
