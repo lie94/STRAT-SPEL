@@ -86,15 +86,18 @@ public class GameMap implements Refresh,SaveAble{
 							p.addX(-MAX_WIDTH).minus(GameStateManager.s);
 						else
 							p.addX(MAX_WIDTH).minus(GameStateManager.s);
-					g.setColor(StatFunc.getColor(squares[i][j].getType()));
-					g.fillRect((int) p.getX(), (int) p.getY(), (int) getSquareWidth(), (int) getSquareHeight());
-					/*temp = StatFunc.typeToMapPart(squares[i][j]);
-					g.drawImage(tiles, 
-							(int) p.getX()						, (int) p.getY()					,
-							(int) p.getX() + getSquareWidth()	, (int) p.getY() + getSquareHeight(),
-							(int) temp.getX()					, (int) temp.getY()					,
-							(int) temp.getX() + 500				, (int) temp.getY() + 500		
-							,null);*/
+					if(getSquareWidth() < 100){
+						g.setColor(StatFunc.getColor(squares[i][j].getType()));
+						g.fillRect((int) p.getX(), (int) p.getY(), (int) getSquareWidth(), (int) getSquareHeight());
+					}else{
+						temp = StatFunc.typeToMapPart(squares[i][j]);
+						g.drawImage(tiles, 
+								(int) p.getX()						, (int) p.getY()					,
+								(int) p.getX() + getSquareWidth()	, (int) p.getY() + getSquareHeight(),
+								(int) temp.getX()					, (int) temp.getY()					,
+								(int) temp.getX() + 500				, (int) temp.getY() + 500		
+								,null);
+					}
 				}
 			}
 		}

@@ -85,12 +85,19 @@ public class GameStateManager implements KeyListener, MouseWheelListener{
 		if(mouseWheelRot != 0){
 			if(i == -1){
 				gs.getMap().setSquareDim(GameMap.getSquareWidth() * 1.2, GameMap.getSquareHeight() * 1.2);
+				if(GameMap.getSquareWidth() > 500){
+					gs.getMap().setSquareDim(500, GameMap.getSquareHeight());
+				}
+				if(GameMap.getSquareHeight() > 500){
+					gs.getMap().setSquareDim(GameMap.getSquareWidth(), 500);
+				}
 			}else{
 				gs.getMap().setSquareDim(GameMap.getSquareWidth() * 0.8, GameMap.getSquareHeight() * 0.8);
+				
 			}
-			//gs.getMap().setSquareDim(GameMap.getSquareWidth() - i *  move, GameMap.getSquareHeight() - i * move);
+		}else{
+			return;
 		}
-			
 		mouseWheelRot = 0;
 	}
 	public GameState getGameState() {

@@ -53,6 +53,8 @@ public class Run extends Canvas implements Runnable{
 		frame.setVisible(true);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setLocationRelativeTo(null);
+		
+		
 	}
 	/**
 	 * Initiates all of the program
@@ -60,8 +62,8 @@ public class Run extends Canvas implements Runnable{
 	public synchronized void start(){
 		running = true;
 		gsm = new GameStateManager(this);
-		frame.addKeyListener((KeyListener) gsm);
-		frame.addMouseWheelListener(gsm);
+		addKeyListener((KeyListener) gsm);
+		addMouseWheelListener(gsm);
 		frame.toFront();
 		new Thread(this).start();
 	}
