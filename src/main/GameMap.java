@@ -17,13 +17,14 @@ import square.Square;
 public class GameMap implements Refresh,SaveAble{
 	private Square[][] squares;
 	public static int MAX_WIDTH, MAX_HEIGHT;
+	public static final int STD_MAX_WIDTH = 40, STD_MAX_HEIGHT = 40;
 	private static int SQUARE_WIDTH,SQUARE_HEIGHT;
 	private Screen s;
 	private BufferedImage tiles;
 	public GameMap(final int size, Screen s){
 		this.s = s;
-		SQUARE_WIDTH = 20; 
-		SQUARE_HEIGHT = 20;
+		SQUARE_WIDTH = STD_MAX_WIDTH; 
+		SQUARE_HEIGHT = STD_MAX_HEIGHT;
 		squares = StatFunc.generateMap(size);
 		MAX_WIDTH = squares.length * SQUARE_WIDTH;
 		MAX_HEIGHT = squares[0].length * SQUARE_HEIGHT;
@@ -36,8 +37,8 @@ public class GameMap implements Refresh,SaveAble{
 	public GameMap(final int width, final int height, Screen s){
 		squares = new Square[width][height];
 		this.s = s;
-		SQUARE_WIDTH = 20; 
-		SQUARE_HEIGHT = 20;
+		SQUARE_WIDTH = STD_MAX_WIDTH; 
+		SQUARE_HEIGHT = STD_MAX_HEIGHT;
 		MAX_WIDTH = squares.length * SQUARE_WIDTH;
 		MAX_HEIGHT = squares[0].length * SQUARE_HEIGHT;
 		try {

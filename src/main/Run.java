@@ -64,6 +64,7 @@ public class Run extends Canvas implements Runnable{
 		gsm = new GameStateManager(this);
 		addKeyListener((KeyListener) gsm);
 		addMouseWheelListener(gsm);
+		addMouseListener(gsm);
 		frame.toFront();
 		new Thread(this).start();
 	}

@@ -1,5 +1,7 @@
 package nav;
 
+import java.awt.Point;
+
 public class Pos implements Cloneable{
 	protected double x,y;
 	public Pos(int x, int y){
@@ -13,6 +15,27 @@ public class Pos implements Cloneable{
 	public Pos(){
 		x = 0;
 		y = 0;
+	}
+	public Pos setPos(double x, double y){
+		this.x = x;
+		this.y = y;
+		return this;
+	}
+	public Vector sub(Pos p){
+		return new Vector(x - p.getX(), y - p.getY());
+	}
+	public Vector sub(Point p){
+		return new Vector(x - p.getX(), y - p.getY());
+	}
+	public Pos setPos(Point p){
+		x = p.getX();
+		y = p.getY();
+		return this;
+	}
+	public Pos add(Pos p){
+		x += p.getX();
+		y += p.getY();
+		return this;
 	}
 	public double getX(){
 		return x;

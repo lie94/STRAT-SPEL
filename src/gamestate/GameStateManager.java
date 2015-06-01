@@ -1,20 +1,25 @@
 package gamestate;
 
+import java.awt.MouseInfo;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import main.GameMap;
 import main.Run;
 import main.StatFunc;
+import nav.Pos;
 import nav.Screen;
 
-public class GameStateManager implements KeyListener, MouseWheelListener{
+public class GameStateManager implements KeyListener, MouseWheelListener, MouseListener{
 	private GameState gs;
 	private boolean moveScreen[];
 	private Run r;
 	private int mouseWheelRot = 0;
+	private Pos shiftScreen;
 	public static Screen s;
 	public GameStateManager(Run r){
 		this.r = r;
@@ -30,6 +35,12 @@ public class GameStateManager implements KeyListener, MouseWheelListener{
 			}
 		}
 		changeSquare(mouseWheelRot);
+		if(shiftScreen != null){
+			s.add(	shiftScreen.sub(MouseInfo.getPointerInfo().getLocation()));
+			shiftScreen.setPos(MouseInfo.getPointerInfo().getLocation());
+			s.correctPos();
+		}
+		
 	}
 	@Override
 	public void keyPressed(KeyEvent arg0) {
@@ -93,7 +104,6 @@ public class GameStateManager implements KeyListener, MouseWheelListener{
 				}
 			}else{
 				gs.getMap().setSquareDim(GameMap.getSquareWidth() * 0.8, GameMap.getSquareHeight() * 0.8);
-				
 			}
 		}else{
 			return;
@@ -102,6 +112,34 @@ public class GameStateManager implements KeyListener, MouseWheelListener{
 	}
 	public GameState getGameState() {
 		return gs;
+	}
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		if(arg0.getButton() == 1){
+			shiftScreen = new Pos(arg0.getX(),arg0.getY());
+		}
+		//System.out.println(arg0.getX() + ", " + arg0.getY());
+		
+	}
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		if(arg0.getButton() == 1)
+			shiftScreen = null;
 	}
 
 }
