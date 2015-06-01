@@ -226,7 +226,7 @@ public class StatFunc {
 	public static BufferedImage getMiniMap(GameMap map) {
 		Square[][] squares = map.getSquares();
 		BufferedImage temp; 
-		if((int) Screen.WIDTH / 5 > squares.length)
+		if((int) Screen.WIDTH / 5 < squares.length)
 			temp = new BufferedImage((int) Screen.WIDTH / 5, (int) (Screen.WIDTH / 5) * squares[0].length / squares.length, BufferedImage.TYPE_INT_RGB);
 		else
 			temp = new BufferedImage(squares.length, squares[0].length, BufferedImage.TYPE_INT_RGB);

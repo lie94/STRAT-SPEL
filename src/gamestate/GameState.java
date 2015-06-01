@@ -14,27 +14,34 @@ public class GameState implements Refresh{
 	private GameMap map;
 	private Screen s;
 	private BufferedImage miniMap;
+	private int miniMapWidth; 
+	private int miniMapHeight;
 	GameState(Screen s, boolean loadMap){
 		if(loadMap)
 			map = null;
 		else
 			map = new GameMap(1,1,s);
 		miniMap = StatFunc.getMiniMap(map);
+		miniMapWidth = (int) (Screen.WIDTH / 10);
+		miniMapHeight = (int) (((double) (miniMap.getHeight()) / miniMap.getWidth()) * (Screen.WIDTH / 10));
 		this.s = s;
 	}
 	public void update(){
 		map.update();
+		if(miniMapWidth != (int) (Screen.WIDTH / 10)){
+			miniMapWidth = (int) (Screen.WIDTH / 10);
+			miniMapHeight = (int) (((double) (miniMap.getHeight()) / miniMap.getWidth()) * (Screen.WIDTH / 10));
+		}
 	}
 	public void draw(Graphics g){
 		map.draw(g);
-		//g.drawImage(miniMap, (int) Screen.WIDTH / 20, (int) (Screen.HEIGHT / 20), null);
-		//int borderthickness = (int) Screen.WIDTH / 80;
+		int borderthickness = (int) Screen.WIDTH / 160;
 		g.setColor(Color.BLACK);
-		int miniMapWidth = (int) (Screen.WIDTH / 10), miniMapHeight = (int) ((miniMap.getHeight() / miniMap.getWidth()) * (Screen.WIDTH / 10));
-		g.fillRect(0, 0, miniMapWidth, miniMap.getHeight());
-		g.fillRect(0,(int) (Screen.HEIGHT - miniMap.getHeight()),miniMapWidth, miniMapHeight);
-		g.fillRect((int) Screen.WIDTH - miniMap.getWidth(), 0 , miniMapWidth, miniMapHeight);
-		g.fillRect((int) Screen.WIDTH - miniMap.getWidth(), (int) Screen.HEIGHT - miniMap.getHeight(), miniMapWidth, miniMapHeight);
+		g.fillRect((int) (Screen.WIDTH / 80), (int) (Screen.HEIGHT - miniMapHeight - 2 * borderthickness - Screen.WIDTH / 80), miniMapWidth + 2 * borderthickness, miniMapHeight + 2 * borderthickness);
+		g.drawImage(miniMap, (int) (Screen.WIDTH / 80) + borderthickness, (int) (Screen.HEIGHT - miniMapHeight - borderthickness - Screen.WIDTH / 80),miniMapWidth,miniMapHeight, null);
+		//g.drawImage(miniMap, (int) Screen.WIDTH / 20, (int) (Screen.HEIGHT / 20), null);
+		
+	
 	}
 	public Screen getScreen(){
 		return s;

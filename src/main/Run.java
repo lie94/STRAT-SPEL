@@ -3,7 +3,6 @@ import gamestate.GameStateManager;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
@@ -15,7 +14,6 @@ public class Run extends Canvas implements Runnable{
 	private static final long serialVersionUID = 1L;
 	private static final int TARGET_FPS = 60;
 	private final String NAME = "STRAT-GAME";
-	private final int MAXW = 1280, MAXH = 720;
 	public JFrame frame; //Can be showed in package
 	private boolean running;
 	private GameStateManager gsm;
@@ -54,7 +52,6 @@ public class Run extends Canvas implements Runnable{
 		frame.setResizable(true);
 		frame.setVisible(true);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		frame.toFront();
 		frame.setLocationRelativeTo(null);
 	}
 	/**
@@ -63,8 +60,9 @@ public class Run extends Canvas implements Runnable{
 	public synchronized void start(){
 		running = true;
 		gsm = new GameStateManager(this);
-		addKeyListener((KeyListener) gsm);
-		addMouseWheelListener(gsm);
+		frame.addKeyListener((KeyListener) gsm);
+		frame.addMouseWheelListener(gsm);
+		frame.toFront();
 		new Thread(this).start();
 	}
 	/**
