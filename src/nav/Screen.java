@@ -26,28 +26,35 @@ public class Screen extends Pos{
 	public void setPos(Pos p){
 		x = p.getX();
 		y = p.getY();
+		correctPos();
+	}
+	public void correctPos(){
+		if(y < 0)
+			y = 0;
+		if(x < -WIDTH)
+			x = GameMap.MAX_WIDTH - WIDTH;
+		else
+			x %= GameMap.MAX_WIDTH;
+		if(y > GameMap.MAX_HEIGHT - HEIGHT)
+			y = GameMap.MAX_HEIGHT - HEIGHT;
 	}
 	public void move(int dir, double speed){
 		switch(dir){
 		case 0:
 			y = (y - speed);
-			if(y < 0)
-				y = 0;
 			break;
 		case 1:
-			x = (x + speed) % GameMap.MAX_WIDTH;
+			x = (x + speed); 
 			break;
 		case 2:
 			y = (y + speed);
-			if(y > GameMap.MAX_HEIGHT - HEIGHT)
-				y = GameMap.MAX_HEIGHT - HEIGHT;
+			
 			break;
 		case 3:
 			x = (x - speed);
-			if(x < -WIDTH)
-				x = GameMap.MAX_WIDTH - WIDTH;
 			break;
 		}
+		correctPos();
 	}
 	public Pos getRelativeMiddle(){
 		return new Pos(StatFunc.avg(x,x + WIDTH)  / GameMap.MAX_WIDTH, StatFunc.avg(y,y+HEIGHT) / GameMap.MAX_HEIGHT);
