@@ -76,26 +76,32 @@ public class GameMap implements Refresh,SaveAble{
 		int isIn;
 		for(int i = 0; i < squares.length; i++){
 			for(int j = 0; j < squares[0].length; j++){
-				p = getPosOfSquare(i,j);
-				isIn = GameStateManager.s.isSquareIn(p); 
-				if(	 isIn != 0){
-					if(isIn == 1)
-						p.minus(GameStateManager.s);
-					else
-						if(GameStateManager.s.getX() < 0)
-							p.addX(-MAX_WIDTH).minus(GameStateManager.s);
+				
+					p = getPosOfSquare(i,j);
+					isIn = GameStateManager.s.isSquareIn(p); 
+					if(	 isIn != 0){
+						if(isIn == 1)
+							p.minus(GameStateManager.s);
 						else
-							p.addX(MAX_WIDTH).minus(GameStateManager.s);
-					g.setColor(StatFunc.getColor(squares[i][j].getType()));
-					g.fillRect((int) p.getX(), (int) p.getY(), (int) getSquareWidth(), (int) getSquareHeight());
-					/*temp = StatFunc.typeToMapPart(squares[i][j]);
-					g.drawImage(tiles, 
-							(int) p.getX()						, (int) p.getY()					,
-							(int) p.getX() + getSquareWidth()	, (int) p.getY() + getSquareHeight(),
-							(int) temp.getX()					, (int) temp.getY()					,
-							(int) temp.getX() + 500				, (int) temp.getY() + 500		
-							,null);*/
+							if(GameStateManager.s.getX() < 0)
+								p.addX(-MAX_WIDTH).minus(GameStateManager.s);
+							else
+								p.addX(MAX_WIDTH).minus(GameStateManager.s);
+						//if(getSquareWidth() > 100){
+						g.setColor(StatFunc.getColor(squares[i][j].getType()));
+						g.fillRect((int) p.getX(), (int) p.getY(), (int) getSquareWidth(), (int) getSquareHeight());
+						/*}else{
+							temp = StatFunc.typeToMapPart(squares[i][j]);
+							g.drawImage(tiles, 
+									(int) p.getX()						, (int) p.getY()					,
+									(int) p.getX() + getSquareWidth()	, (int) p.getY() + getSquareHeight(),
+									(int) temp.getX()					, (int) temp.getY()					,
+									(int) temp.getX() + 500				, (int) temp.getY() + 500		
+									,null);
+						}*/
+						
 				}
+				
 			}
 		}
 	}
