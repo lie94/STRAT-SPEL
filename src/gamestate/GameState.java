@@ -19,7 +19,11 @@ public class GameState implements Refresh{
 	private int miniMapHeight;
 	GameState(Screen s, boolean loadMap) throws IOException{
 		if(loadMap)
-			map = StatFunc.loadMap("test",s,this);
+			try{
+				map = StatFunc.loadMap("test",s,this);
+			}catch(Exception e){
+				map = new GameMap(1,s);
+			}
 		else
 			map = new GameMap(1,s);
 		miniMap = StatFunc.getMiniMap(map);
