@@ -32,10 +32,6 @@ public class Run extends Canvas implements Runnable{
 	 */
 	@SuppressWarnings("static-access")
 	Run(){
-		
-		//setMinimumSize(new Dimension(MAXW,MAXH));
-		//setMaximumSize(new Dimension(MAXW,MAXH));
-		//setPreferredSize(new Dimension(MAXW,MAXH));
 		frame = new JFrame(NAME);
 		
 		

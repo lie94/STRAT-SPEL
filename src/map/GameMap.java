@@ -1,8 +1,9 @@
-package main;
+package map;
 
 import gamestate.GameStateManager;
 import intrface.Refresh;
 import intrface.SaveAble;
+import intrface.ScreenDependent;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -10,33 +11,32 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import main.StatFunc;
 import nav.Pos;
 import nav.Screen;
 import square.Square;
 
-public class GameMap implements Refresh,SaveAble{
+public class GameMap implements Refresh,SaveAble,ScreenDependent{
 	private Square[][] squares;
 	public static int MAX_WIDTH, MAX_HEIGHT;
-	public static final int STD_MAX_WIDTH = 40, STD_MAX_HEIGHT = 40;
-	private static int SQUARE_WIDTH,SQUARE_HEIGHT;
+	public static final int STD_SQUARE_MAX_SIZE = 40;
+	private static int SQUARE_SIZE;
 	private Screen s;
 	private BufferedImage tiles;
 	public GameMap(final int size, Screen s) throws IOException{
 		this.s = s;
-		SQUARE_WIDTH = STD_MAX_WIDTH; 
-		SQUARE_HEIGHT = STD_MAX_HEIGHT;
+		SQUARE_SIZE = STD_SQUARE_MAX_SIZE; 
 		squares = StatFunc.generateMap(size);
-		MAX_WIDTH = squares.length * SQUARE_WIDTH;
-		MAX_HEIGHT = squares[0].length * SQUARE_HEIGHT;
+		MAX_WIDTH = squares.length * SQUARE_SIZE;
+		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
 		tiles = ImageIO.read(getClass().getResourceAsStream("/res/tiles.jpg"));
 	}
 	public GameMap(final int width, final int height, Screen s){
 		squares = new Square[width][height];
 		this.s = s;
-		SQUARE_WIDTH = STD_MAX_WIDTH; 
-		SQUARE_HEIGHT = STD_MAX_HEIGHT;
-		MAX_WIDTH = squares.length * SQUARE_WIDTH;
-		MAX_HEIGHT = squares[0].length * SQUARE_HEIGHT;
+		SQUARE_SIZE = STD_SQUARE_MAX_SIZE; 
+		MAX_WIDTH = squares.length * SQUARE_SIZE;
+		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
 		try {
 			tiles = ImageIO.read(getClass().getResourceAsStream("/res/tiles.jpg"));
 		} catch (IOException e) {
@@ -65,7 +65,7 @@ public class GameMap implements Refresh,SaveAble{
 	}
 	@Override
 	public void update() {
-		
+		updateScreenDependency();
 	}
 	@Override
 	public void draw(Graphics g) {
@@ -83,14 +83,14 @@ public class GameMap implements Refresh,SaveAble{
 							p.addX(-MAX_WIDTH).minus(GameStateManager.s);
 						else
 							p.addX(MAX_WIDTH).minus(GameStateManager.s);
-					if(getSquareWidth() < 100){
+					if(getSquareSize() < 100){
 						g.setColor(StatFunc.getColor(squares[i][j].getType()));
-						g.fillRect((int) p.getX(), (int) p.getY(), (int) getSquareWidth(), (int) getSquareHeight());
+						g.fillRect((int) p.getX(), (int) p.getY(), (int) getSquareSize(), (int) getSquareSize());
 					}else{
 						temp = StatFunc.typeToMapPart(squares[i][j]);
 						g.drawImage(tiles, 
 								(int) p.getX()						, (int) p.getY()					,
-								(int) p.getX() + getSquareWidth()	, (int) p.getY() + getSquareHeight(),
+								(int) p.getX() + getSquareSize()	, (int) p.getY() + getSquareSize(),
 								(int) temp.getX()					, (int) temp.getY()					,
 								(int) temp.getX() + 500				, (int) temp.getY() + 500		
 								,null);
@@ -99,35 +99,24 @@ public class GameMap implements Refresh,SaveAble{
 			}
 		}
 	}
-	public static int getSquareWidth(){
-		return SQUARE_WIDTH;
-	}
-	public static int getSquareHeight(){
-		return SQUARE_HEIGHT;
+	public static int getSquareSize(){
+		return SQUARE_SIZE;
 	}
 	
 	public Pos getPosOfSquare(int i, int j){
-		return new Pos(SQUARE_WIDTH * i, SQUARE_HEIGHT * j);
+		return new Pos(SQUARE_SIZE * i, SQUARE_SIZE * j);
 	}
 	@Override
 	public void newTurn() {
 	}
-	public void setSquareDim(double d, double e){
-		if((int) e * squares[0].length * 0.9 < Screen.HEIGHT || (int) d * squares.length * 0.9 < Screen.WIDTH)
+	public void setSquareDim(double d){
+		if((int) d * squares[0].length * 0.9 < Screen.HEIGHT || (int) d * squares.length * 0.9 < Screen.WIDTH)
 			return;
-		if( d < 1)
+		if( d < 1) //TODO TA BORT SKITEN
 			d = 1;
-		if( e < 1)
-			e = 1;
 		Pos oldMiddle = s.getRelativeMiddle();
-		GameMap.SQUARE_WIDTH = (int) d;
-		GameMap.SQUARE_HEIGHT = (int) e;
-		refreshMax();
+		GameMap.SQUARE_SIZE = (int) d;
 		s.setPos(new Pos(oldMiddle.getX() * MAX_WIDTH - Screen.WIDTH / 2, oldMiddle.getY() * MAX_HEIGHT - Screen.HEIGHT / 2));
-	}
-	private void refreshMax(){
-		MAX_WIDTH = squares.length * SQUARE_WIDTH;
-		MAX_HEIGHT = squares[0].length * SQUARE_HEIGHT;
 	}
 	public Square[][] getSquares(){
 		return squares;
@@ -147,5 +136,10 @@ public class GameMap implements Refresh,SaveAble{
 			}
 		}
 		return s.toString();
+	}
+	@Override
+	public void updateScreenDependency() {
+		MAX_WIDTH = squares.length * SQUARE_SIZE;
+		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
 	}
 }

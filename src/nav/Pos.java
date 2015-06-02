@@ -49,16 +49,18 @@ public class Pos implements Cloneable{
 	public void setY(double y){
 		this.y = y;
 	}
-	public void add(double x, double y){
+	public Pos add(double x, double y){
 		addX(x);
 		addY(y);
+		return this;
 	}
 	public Pos addX(double x){
 		this.x += x;
 		return this;
 	}
-	public void addY(double y){
+	public Pos addY(double y){
 		this.y += y;
+		return this;
 	}
 	public Pos minus(Pos p){
 		x -= p.getX();
@@ -69,6 +71,9 @@ public class Pos implements Cloneable{
 		x += p.getX();
 		y -= p.getY();
 		return this;
+	}
+	public Vector toVector(){
+		return new Vector(x,y);
 	}
 	public String toString(){
 		return "(" + x + ", " + y + ")";

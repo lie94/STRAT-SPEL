@@ -10,9 +10,9 @@ import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
-import main.GameMap;
 import main.Run;
 import main.StatFunc;
+import map.GameMap;
 import nav.Pos;
 import nav.Screen;
 
@@ -39,7 +39,7 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 		gs.update();
 		for(int i = 0; i < 4; i++){
 			if(moveScreen[i]){
-				s.move(i);
+				s.move(i,26);
 			}
 		}
 		changeSquare(mouseWheelRot);
@@ -109,15 +109,9 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 	private void changeSquare(int i){
 		if(mouseWheelRot != 0){
 			if(i == -1){
-				gs.getMap().setSquareDim(GameMap.getSquareWidth() * 1.2, GameMap.getSquareHeight() * 1.2);
-				if(GameMap.getSquareWidth() > 500){
-					gs.getMap().setSquareDim(500, GameMap.getSquareHeight());
-				}
-				if(GameMap.getSquareHeight() > 500){
-					gs.getMap().setSquareDim(GameMap.getSquareWidth(), 500);
-				}
+				gs.getMap().setSquareDim(GameMap.getSquareSize() * 1.2);
 			}else{
-				gs.getMap().setSquareDim(GameMap.getSquareWidth() * 0.8, GameMap.getSquareHeight() * 0.8);
+				gs.getMap().setSquareDim(GameMap.getSquareSize() * 0.8);
 			}
 		}else{
 			return;
