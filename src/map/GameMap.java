@@ -31,6 +31,18 @@ public class GameMap implements Refresh,SaveAble,ScreenDependent{
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
 		tiles = ImageIO.read(getClass().getResourceAsStream("/res/tiles.jpg"));
 	}
+	public GameMap(final int size, Screen s, final int square_size){
+		this.s = s;
+		SQUARE_SIZE = square_size; 
+		squares = StatFunc.generateMap(size);
+		MAX_WIDTH = squares.length * SQUARE_SIZE;
+		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
+		try {
+			tiles = ImageIO.read(getClass().getResourceAsStream("/res/tiles.jpg"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	public GameMap(final int width, final int height, Screen s){
 		squares = new Square[width][height];
 		this.s = s;
@@ -112,10 +124,11 @@ public class GameMap implements Refresh,SaveAble,ScreenDependent{
 	public void setSquareDim(double d){
 		if((int) d * squares[0].length * 0.9 < Screen.HEIGHT || (int) d * squares.length * 0.9 < Screen.WIDTH)
 			return;
-		if( d < 1) //TODO TA BORT SKITEN
-			d = 1;
+		if(d > 300)
+			return;
 		Pos oldMiddle = s.getRelativeMiddle();
 		GameMap.SQUARE_SIZE = (int) d;
+		updateScreenDependency();
 		s.setPos(new Pos(oldMiddle.getX() * MAX_WIDTH - Screen.WIDTH / 2, oldMiddle.getY() * MAX_HEIGHT - Screen.HEIGHT / 2));
 	}
 	public Square[][] getSquares(){

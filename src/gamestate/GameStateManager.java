@@ -71,11 +71,7 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 			r.stop();
 			break;
 		case KeyEvent.VK_SPACE:
-			try {
-				gs = new GameState(s,false);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			gs = new GameState(s,GameMap.getSquareSize());
 		}
 	}
 

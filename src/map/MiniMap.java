@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
+import main.StatFunc;
 import nav.Pos;
 import nav.Screen;
 import intrface.Refresh;
@@ -15,8 +16,8 @@ public class MiniMap implements ScreenDependent,Refresh{
 	private int borderthickness;
 	private Screen s;
 	private GameMap m;
-	public MiniMap(BufferedImage b, Screen s, GameMap m){
-		map = b;
+	public MiniMap(Screen s, GameMap m){
+		map = StatFunc.getMiniMap(m);
 		this.s = s;
 		this.m = m;
 		borderthickness = (int) Screen.WIDTH / 160;
@@ -29,7 +30,9 @@ public class MiniMap implements ScreenDependent,Refresh{
 		// TODO Auto-generated method stub
 		updateScreenDependency();
 	}
-
+	public GameMap getMap(){
+		return m;
+	}
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(Color.BLACK);
@@ -40,8 +43,49 @@ public class MiniMap implements ScreenDependent,Refresh{
 		//Square
 		g.setColor(Color.YELLOW);
 		Pos [] s_corners = getTranslatedCorners();
-		g.drawLine((int) s_corners[0].getX(), (int) s_corners[0].getY(), (int) s_corners[3].getX(), (int) s_corners[3].getY());
-		g.drawLine((int) s_corners[0].getX(), (int) s_corners[0].getY(), (int) s_corners[1].getX(), (int) s_corners[1].getY());
+		if(s_corners[0].getX() < position.getX() + borderthickness){
+			//Right line is normal
+			g.drawLine((int) s_corners[1].getX(), (int) s_corners[1].getY(), (int) s_corners[2].getX(), (int) s_corners[2].getY());
+			//Top line
+			g.drawLine((int) position.getX() + borderthickness	, (int) s_corners[1].getY(), (int) s_corners[1].getX(), (int) s_corners[1].getY());
+			g.drawLine(	(int) (size.getX() + (s_corners[0].getX())), 
+						(int) s_corners[0].getY(), 
+						(int) (position.getX() +  borderthickness + size.getX()), 
+						(int) s_corners[0].getY());
+			//Left Line
+			g.drawLine(	(int) (size.getX() + (s_corners[0].getX())),
+						(int) s_corners[0].getY(),
+						(int) (size.getX() + s_corners[3].getX()),
+						(int) s_corners[3].getY());
+			//Bottom line
+			g.drawLine((int) (position.getX() + borderthickness), (int) s_corners[2].getY(), (int) s_corners[2].getX(), (int) s_corners[2].getY());
+			g.drawLine(	(int) (size.getX() + (s_corners[0].getX())), 
+						(int) s_corners[3].getY(), 
+						(int) (position.getX() +  borderthickness + size.getX()), 
+						(int) s_corners[3].getY());
+		}else if(s_corners[1].getX() > position.getX() + borderthickness + size.getX()){
+			//Right line
+			g.drawLine(	(int) (-size.getX() + (s_corners[1].getX())),
+						(int) s_corners[1].getY(),
+						(int) (-size.getX() + s_corners[1].getX()),
+						(int) s_corners[3].getY());
+			//Top line
+			g.drawLine((int) s_corners[0].getX(), (int) s_corners[0].getY(), (int) (position.getX() + borderthickness + size.getX()), (int) s_corners[0].getY());
+			g.drawLine((int) (position.getX() + borderthickness), (int) s_corners[0].getY(),
+						(int) (s_corners[1].getX() - size.getX()), (int) s_corners[1].getY());
+			//Left line
+			g.drawLine((int) s_corners[0].getX(), (int) s_corners[0].getY(), (int) s_corners[3].getX(), (int) s_corners[3].getY());
+			//Bottom line
+			g.drawLine((int) s_corners[3].getX(), (int) s_corners[3].getY(), (int) (position.getX() + borderthickness + size.getX()), (int) s_corners[3].getY());
+			g.drawLine((int) (position.getX() + borderthickness), (int) s_corners[3].getY(), (int) (s_corners[2].getX() - size.getX()), (int) s_corners[2].getY());
+			
+		}else{
+			g.drawLine((int) s_corners[0].getX(), (int) s_corners[0].getY(), (int) s_corners[3].getX(), (int) s_corners[3].getY());
+			g.drawLine((int) s_corners[0].getX(), (int) s_corners[0].getY(), (int) s_corners[1].getX(), (int) s_corners[1].getY());
+			g.drawLine((int) s_corners[1].getX(), (int) s_corners[1].getY(), (int) s_corners[2].getX(), (int) s_corners[2].getY());
+			g.drawLine((int) s_corners[2].getX(), (int) s_corners[2].getY(), (int) s_corners[3].getX(), (int) s_corners[3].getY());
+		}
+		
 	}
 	/**
 	 * 	0		1

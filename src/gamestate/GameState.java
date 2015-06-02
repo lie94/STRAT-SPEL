@@ -15,16 +15,17 @@ public class GameState implements Refresh{
 	private MiniMap minimap;
 	GameState(Screen s, boolean loadMap) throws IOException{
 		if(loadMap)
-			try{
-				map = StatFunc.loadMap("test",s,this);
-			}catch(Exception e){
-				map = new GameMap(1,s);
-			}
+			map = StatFunc.loadMap("test",s,this);
 		else
 			map = new GameMap(1,s);
-		minimap = new MiniMap(StatFunc.getMiniMap(map),s,map);
+		minimap = new MiniMap(s,map);
 		
 		this.s = s;
+	}
+	GameState(Screen s, int square_width){
+		map = new GameMap(1,s,square_width);
+		minimap = new MiniMap(s,map);
+		map.setSquareDim(square_width);
 	}
 	public void update(){
 		map.update();
