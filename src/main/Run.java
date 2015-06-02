@@ -9,12 +9,14 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class Run extends Canvas implements Runnable{
 	private static final long serialVersionUID = 1L;
 	private static final int TARGET_FPS = 60;
 	private final String NAME = "STRAT-GAME";
-	public JFrame frame; //Can be showed in package
+	public static JFrame frame; //Can be showed in package
+	public static JPanel panel;
 	private boolean running;
 	private GameStateManager gsm;
 	/**
@@ -30,29 +32,30 @@ public class Run extends Canvas implements Runnable{
 	/**
 	 * Initiates the frame and starts the key listener
 	 */
-	@SuppressWarnings("static-access")
 	Run(){
-		
+		panel = new JPanel();
 		//setMinimumSize(new Dimension(MAXW,MAXH));
 		//setMaximumSize(new Dimension(MAXW,MAXH));
 		//setPreferredSize(new Dimension(MAXW,MAXH));
 		frame = new JFrame(NAME);
-		
-		
-		frame.setDefaultLookAndFeelDecorated(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new BorderLayout());
-		
-		frame.setExtendedState(JFrame.NORMAL);
-		
-		frame.add(this,BorderLayout.CENTER);
-		frame.setUndecorated(true);
-		frame.pack();
-		
-		frame.setResizable(true);
+		frame.add(panel);
 		frame.setVisible(true);
+		frame.setExtendedState(JFrame.NORMAL);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//frame.setDefaultLookAndFeelDecorated(false);
+		//frame.setUndecorated(true);
+		frame.setLayout(new BorderLayout());
+		frame.add(this,BorderLayout.CENTER);
+		//frame.setUndecorated(true);
+		frame.pack();
+		frame.setResizable(true);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setLocationRelativeTo(null);
+		
+		
+		//panel.setBackground(Color.YELLOW);
+		
 		
 		
 	}
@@ -107,6 +110,6 @@ public class Run extends Canvas implements Runnable{
 		g.clearRect(0,0,getWidth(), getHeight());
 		gsm.getGameState().draw(g);
 		g.dispose();
-		bs.show();
+		//bs.show();
 	}
 }
