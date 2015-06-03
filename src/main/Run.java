@@ -7,7 +7,9 @@ import java.awt.Graphics;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 public class Run extends Canvas implements Runnable{
@@ -46,40 +48,29 @@ public class Run extends Canvas implements Runnable{
 		frame.pack();
 		
 		frame.setResizable(true);
+		
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		frame.setLocationRelativeTo(null);
-		
+		frame.toFront();
 		
 	}
-	/**
-	 * Initiates all of the program
-	 */
 	public synchronized void start(){
+		showLoadingScreen();
 		running = true;
 		gsm = new GameStateManager(this);
 		addKeyListener((KeyListener) gsm);
 		addMouseWheelListener(gsm);
 		addMouseListener(gsm);
-		frame.toFront();
 		new Thread(this).start();
 	}
-	/**
-	 * Kills the program
-	 */
 	public synchronized void stop(){
 		running = false;
 	}
-	/**
-	 * Starts as the thread is initiated
-	 * The main game loop that updates the gamestate
-	 * and draws the current map
-	 */
 	@Override
-	public void run() {
+	public void run() {	
 		while(running){
 			long t0 = System.currentTimeMillis();
-			render();
 			gsm.update();
 			long t1 = System.currentTimeMillis();
 			if(t1-t0 < 1000.0 / TARGET_FPS){
@@ -87,18 +78,43 @@ public class Run extends Canvas implements Runnable{
 					t1 = System.currentTimeMillis();
 				}
 			}
+			render();
 		}
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
-	/**
-	 * Renders the current map and all the blocks in it
-	 */
-	private void render() {
+	private void showLoadingScreen() {
 		BufferStrategy bs = getBufferStrategy();
 		if(bs == null){
 			createBufferStrategy(3);
+			showLoadingScreen();
 			return;
 		}
+		Graphics g = bs.getDrawGraphics();
+		g.clearRect(0, 0, getWidth(), getHeight());
+		System.out.println(frame.getWidth() + ", " + frame.getHeight());
+		try {
+			System.out.println("SWAG");
+			g.drawImage(ImageIO.read(getClass().getResourceAsStream("/res/img/intro.jpg")), 0, 0, frame.getWidth(),frame.getHeight(), null);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		g.dispose();
+		bs.show();
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	private void render() {
+		BufferStrategy bs = getBufferStrategy();
+		/*if(bs == null){
+			createBufferStrategy(3);
+			return;
+		}*/
 		Graphics g = bs.getDrawGraphics();
 		g.clearRect(0,0,getWidth(), getHeight());
 		gsm.getGameState().draw(g);

@@ -243,7 +243,7 @@ public class StatFunc {
 	public static void save(GameMap m, String savename){
 		PrintWriter out;
 		try {
-			out = new PrintWriter("src/saves/" + savename + ".txt");
+			out = new PrintWriter("src/res/saves/" + savename + ".txt");
 			out.print(m.toSaveFormat(new StringBuilder()));
 			out.close();
 		} catch (FileNotFoundException e) {
@@ -254,7 +254,7 @@ public class StatFunc {
 		BufferedReader in;
 		//in = new BufferedReader(new FileReader(getClass().getResourceAsStream("/saves/" + url + ".txt")));
 		in = new BufferedReader(	new InputStreamReader(
-		        g.getClass().getResourceAsStream("/saves/" + url + ".txt")));
+		        g.getClass().getResourceAsStream("/res/saves/" + url + ".txt")));
 				
 				
 		//in = new BufferedReader(new FileReader("saves/" + url + ".txt"));

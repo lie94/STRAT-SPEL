@@ -38,7 +38,7 @@ public class GameMap implements Refresh,SaveAble,ScreenDependent{
 		MAX_WIDTH = squares.length * SQUARE_SIZE;
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
 		try {
-			tiles = ImageIO.read(getClass().getResourceAsStream("/res/tiles.jpg"));
+			tiles = ImageIO.read(getClass().getResourceAsStream("/res/img/tiles.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -50,7 +50,7 @@ public class GameMap implements Refresh,SaveAble,ScreenDependent{
 		MAX_WIDTH = squares.length * SQUARE_SIZE;
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
 		try {
-			tiles = ImageIO.read(getClass().getResourceAsStream("/res/tiles.jpg"));
+			tiles = ImageIO.read(getClass().getResourceAsStream("/res/img/tiles.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
