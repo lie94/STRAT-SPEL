@@ -12,6 +12,10 @@ public class Pos implements Cloneable{
 		this.x = x;
 		this.y = y;
 	}
+	public Pos(Point p){
+		this.x = p.getX();
+		this.y = p.getY();
+	}
 	public Pos(){
 		x = 0;
 		y = 0;
@@ -77,5 +81,8 @@ public class Pos implements Cloneable{
 	}
 	public String toString(){
 		return "(" + x + ", " + y + ")";
+	}
+	public Pos clone(){
+		return new Pos(x,y);
 	}
 }

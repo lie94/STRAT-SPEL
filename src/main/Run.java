@@ -3,6 +3,7 @@ import gamestate.GameStateManager;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
@@ -36,22 +37,28 @@ public class Run extends Canvas implements Runnable{
 	Run(){
 		frame = new JFrame(NAME);
 		
-		
 		frame.setDefaultLookAndFeelDecorated(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 		
-		frame.setExtendedState(JFrame.NORMAL);
-		
 		frame.add(this,BorderLayout.CENTER);
-		frame.setUndecorated(true);
-		frame.setResizable(true);
-		frame.setLocationRelativeTo(null);
+		
+		if(!System.getProperty("os.name").startsWith("Windows")){
+			setMinimumSize(new Dimension(1280,720));
+			setMaximumSize(new Dimension(1280,720));
+			setPreferredSize(new Dimension(1280,720));
+			frame.setResizable(false);
+		}else{
+			frame.setExtendedState(frame.getExtendedState()|JFrame.MAXIMIZED_BOTH);
+			frame.setResizable(false);
+			frame.setUndecorated(true);
+		}
 		
 		frame.pack();
-		frame.setVisible(true);
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
+		frame.setVisible(true);
+		
+		frame.setLocationRelativeTo(null);
 	}
 	public synchronized void start(){
 		running = true;
@@ -61,10 +68,9 @@ public class Run extends Canvas implements Runnable{
 		addKeyListener((KeyListener) gsm);
 		addMouseWheelListener(gsm);
 		addMouseListener(gsm);
-		try {
+		try { //SIMPULATE LOADING
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		l.stop();
@@ -130,7 +136,7 @@ public class Run extends Canvas implements Runnable{
 			Graphics g = bs.getDrawGraphics();
 			g.clearRect(0,0,getWidth(), getHeight());
 			try {
-				g.drawImage(ImageIO.read(getClass().getResourceAsStream("/res/img/intro.jpg")), 0, 0, null);
+				g.drawImage(ImageIO.read(getClass().getResourceAsStream("/res/img/intro.jpg")), 0, 0,getWidth(),getHeight(), null);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

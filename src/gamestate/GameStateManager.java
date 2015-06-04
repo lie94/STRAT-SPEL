@@ -22,6 +22,7 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 	private Run r;
 	private int mouseWheelRot = 0;
 	private Pos shiftScreen;
+	private boolean setSSNull;
 	public static Screen s;
 	public GameStateManager(Run r){
 		this.r = r;
@@ -44,9 +45,15 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 		}
 		changeSquare(mouseWheelRot);
 		if(shiftScreen != null){
-			s.add(	shiftScreen.sub(MouseInfo.getPointerInfo().getLocation()));
-			shiftScreen.setPos(MouseInfo.getPointerInfo().getLocation());
+			Pos temp = new Pos(MouseInfo.getPointerInfo().getLocation());
+			temp.add(-r.frame.getLocationOnScreen().getX(), -r.frame.getLocationOnScreen().getY());
+			s.add(shiftScreen.sub(temp));
+			shiftScreen = temp.clone();
 			s.correctPos();
+		}
+		if(setSSNull){
+			shiftScreen = null;
+			setSSNull = false;
 		}
 		
 	}
@@ -130,7 +137,7 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		if(arg0.getButton() == 1)
-			shiftScreen = null;
+			setSSNull = true;
 	}
 
 }

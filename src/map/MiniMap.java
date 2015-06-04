@@ -21,13 +21,12 @@ public class MiniMap implements ScreenDependent,Refresh{
 		this.s = s;
 		this.m = m;
 		borderthickness = (int) Screen.WIDTH / 160;
-		size = new Pos(Screen.WIDTH / 10, (int) (((double) (map.getHeight()) / map.getWidth()) * (Screen.WIDTH / 10)));
-		position = new Pos(Screen.WIDTH / 80, Screen.HEIGHT - size.getY() - 2 * borderthickness - Screen.WIDTH / 80);
+		size = new Pos(Screen.WIDTH / 10,(((double) (map.getHeight()) / map.getWidth()) * (Screen.WIDTH / 10)));
+		position = new Pos(Screen.WIDTH / 80, Screen.HEIGHT - size.getY() - 2 * borderthickness - (Screen.WIDTH / 80));
 	}
 	
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
 		updateScreenDependency();
 	}
 	public GameMap getMap(){

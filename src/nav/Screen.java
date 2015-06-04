@@ -6,14 +6,14 @@ import map.GameMap;
 
 public class Screen extends Pos{
 	public static final double SPEED = 10;
-	public static double WIDTH = 1280 /*+ 1280 * 0.1*/, HEIGHT = 720 /*+ 720 * 0.1*/;
+	public static int WIDTH = 1280 /*+ 1280 * 0.1*/, HEIGHT = 720 /*+ 720 * 0.1*/;
 	public Screen(int width, int height){
 		WIDTH = width;
 		HEIGHT = height;
 		x = 0;
 		y = 0;
 	}
-	private Screen(double x, double y, double width, double height){
+	private Screen(double x, double y, int width, int height){
 		WIDTH = width;
 		HEIGHT = height;
 		this.x = x;
