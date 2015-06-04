@@ -45,23 +45,29 @@ public class Run extends Canvas implements Runnable{
 		
 		frame.add(this,BorderLayout.CENTER);
 		frame.setUndecorated(true);
-		frame.pack();
-		
 		frame.setResizable(true);
-		
 		frame.setLocationRelativeTo(null);
+		
+		frame.pack();
 		frame.setVisible(true);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		frame.toFront();
 		
 	}
 	public synchronized void start(){
-		showLoadingScreen();
 		running = true;
+		LoadingScreen l = new LoadingScreen();
+		new Thread(l).start();
 		gsm = new GameStateManager(this);
 		addKeyListener((KeyListener) gsm);
 		addMouseWheelListener(gsm);
 		addMouseListener(gsm);
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		l.stop();
 		new Thread(this).start();
 	}
 	public synchronized void stop(){
@@ -72,53 +78,64 @@ public class Run extends Canvas implements Runnable{
 		while(running){
 			long t0 = System.currentTimeMillis();
 			gsm.update();
+			render();
 			long t1 = System.currentTimeMillis();
 			if(t1-t0 < 1000.0 / TARGET_FPS){
 				while(t1-t0 < 1000.0 / TARGET_FPS){
 					t1 = System.currentTimeMillis();
 				}
 			}
-			render();
 		}
 		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
-	private void showLoadingScreen() {
+	private void render() {
 		BufferStrategy bs = getBufferStrategy();
 		if(bs == null){
 			createBufferStrategy(3);
-			showLoadingScreen();
 			return;
 		}
-		Graphics g = bs.getDrawGraphics();
-		g.clearRect(0, 0, getWidth(), getHeight());
-		System.out.println(frame.getWidth() + ", " + frame.getHeight());
-		try {
-			System.out.println("SWAG");
-			g.drawImage(ImageIO.read(getClass().getResourceAsStream("/res/img/intro.jpg")), 0, 0, frame.getWidth(),frame.getHeight(), null);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		g.dispose();
-		bs.show();
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	private void render() {
-		BufferStrategy bs = getBufferStrategy();
-		/*if(bs == null){
-			createBufferStrategy(3);
-			return;
-		}*/
 		Graphics g = bs.getDrawGraphics();
 		g.clearRect(0,0,getWidth(), getHeight());
 		gsm.getGameState().draw(g);
 		g.dispose();
 		bs.show();
+	}
+	private class LoadingScreen implements Runnable{
+		private boolean running;
+		LoadingScreen(){
+			running = true;
+		}
+		@Override
+		public void run() {
+			while(running){
+				long t0 = System.currentTimeMillis();
+				showLoadingScreen();
+				long t1 = System.currentTimeMillis();
+				if(t1-t0 < 1000.0 / TARGET_FPS){
+					while(t1-t0 < 1000.0 / TARGET_FPS){
+						t1 = System.currentTimeMillis();
+					}
+				}
+			}
+		}
+		public synchronized void stop(){
+			running = false;
+		}
+		private void showLoadingScreen() {
+			BufferStrategy bs = getBufferStrategy();
+			if(bs == null){
+				createBufferStrategy(3);
+				return;
+			}
+			Graphics g = bs.getDrawGraphics();
+			g.clearRect(0,0,getWidth(), getHeight());
+			try {
+				g.drawImage(ImageIO.read(getClass().getResourceAsStream("/res/img/intro.jpg")), 0, 0, null);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			g.dispose();
+			bs.show();
+		}
 	}
 }

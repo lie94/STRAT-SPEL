@@ -29,7 +29,7 @@ public class GameMap implements Refresh,SaveAble,ScreenDependent{
 		squares = StatFunc.generateMap(size);
 		MAX_WIDTH = squares.length * SQUARE_SIZE;
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
-		tiles = ImageIO.read(getClass().getResourceAsStream("/res/tiles.jpg"));
+		tiles = ImageIO.read(getClass().getResourceAsStream("/res/img/tiles.jpg"));
 	}
 	public GameMap(final int size, Screen s, final int square_size){
 		this.s = s;

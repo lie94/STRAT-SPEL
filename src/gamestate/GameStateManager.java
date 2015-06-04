@@ -27,12 +27,12 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 		this.r = r;
 		s = new Screen((int) r.frame.getWidth(),r.frame.getHeight());
 		try {
-			this.gs = new GameState(s,true);//CHANGE TO FALSE TO GENERATE A NEW MAP
+			this.gs = new GameState(s,false);//CHANGE TO FALSE TO GENERATE A NEW MAP
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			r.frame.dispatchEvent(new WindowEvent(r.frame, WindowEvent.WINDOW_CLOSING));
 		} 
+		s.setPos(GameMap.MAX_WIDTH / 2 - Screen.WIDTH / 2, GameMap.MAX_HEIGHT / 2 - Screen.HEIGHT / 2);
 		moveScreen = new boolean[4];
 	}
 	public void update(){
@@ -74,7 +74,6 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 			gs = new GameState(s,GameMap.getSquareSize());
 		}
 	}
-
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		int code = arg0.getKeyCode();
@@ -94,7 +93,6 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 		}
 		
 	}
-
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 	}
@@ -118,27 +116,16 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 		return gs;
 	}
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseClicked(MouseEvent arg0) {}
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseEntered(MouseEvent arg0) {}
 	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseExited(MouseEvent arg0) {}
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		if(arg0.getButton() == 1){
 			shiftScreen = new Pos(arg0.getX(),arg0.getY());
 		}
-		//System.out.println(arg0.getX() + ", " + arg0.getY());
-		
 	}
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
