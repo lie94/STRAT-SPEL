@@ -11,6 +11,7 @@ public abstract class Unit {
 	protected int [] curr_stats;
 	protected Item[] items;
 	protected static BufferedImage spites;
+	protected String name;
 	public Unit(){
 		if(spites == null)
 			try {

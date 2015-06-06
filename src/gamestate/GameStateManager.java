@@ -10,6 +10,8 @@ import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
+import players.Human;
+import players.Player;
 import main.Run;
 import main.StatFunc;
 import map.GameMap;
@@ -23,6 +25,7 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 	private int mouseWheelRot = 0;
 	private Pos shiftScreen;
 	private boolean setSSNull;
+	private Player[] players;
 	public static Screen s;
 	public GameStateManager(Run r){
 		this.r = r;
@@ -35,6 +38,8 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 		} 
 		s.setPos(GameMap.MAX_WIDTH / 2 - Screen.WIDTH / 2, GameMap.MAX_HEIGHT / 2 - Screen.HEIGHT / 2);
 		moveScreen = new boolean[4];
+		players = new Player[1];
+		players[0] = new Human();
 	}
 	public void update(){
 		gs.update();
