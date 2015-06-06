@@ -8,6 +8,7 @@ import intrface.ScreenDependent;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -15,6 +16,8 @@ import main.StatFunc;
 import nav.Pos;
 import nav.Screen;
 import square.Square;
+import units.Team;
+import units.Unit;
 
 public class GameMap implements Refresh,SaveAble,ScreenDependent{
 	private Square[][] squares;
@@ -30,6 +33,19 @@ public class GameMap implements Refresh,SaveAble,ScreenDependent{
 		MAX_WIDTH = squares.length * SQUARE_SIZE;
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
 		tiles = ImageIO.read(getClass().getResourceAsStream("/res/img/tiles.jpg"));
+		Random rn = new Random();
+		for(int i = 0; i < squares.length; i++){
+			for(int j = 0; j < squares[0].length; j++){
+				if(squares[i][j].getType() != 0 && squares[i][j].getType() != 1 && rn.nextInt(101) > 99){
+					
+					Team t = new Team();
+					t.addUnit(new Unit());
+					System.out.println(t.getUnit(0).toString());
+					squares[i][j].setTeam(t);
+					t.setSquare(squares[i][j]);
+				}
+			}
+		}
 	}
 	public GameMap(final int size, Screen s, final int square_size){
 		this.s = s;
@@ -81,7 +97,7 @@ public class GameMap implements Refresh,SaveAble,ScreenDependent{
 	}
 	@Override
 	public void draw(Graphics g) {
-		Pos p, temp;
+		Pos p;
 		int isIn;
 		for(int i = 0; i < squares.length; i++){
 			for(int j = 0; j < squares[0].length; j++){
@@ -95,18 +111,7 @@ public class GameMap implements Refresh,SaveAble,ScreenDependent{
 							p.addX(-MAX_WIDTH).minus(GameStateManager.s);
 						else
 							p.addX(MAX_WIDTH).minus(GameStateManager.s);
-					if(getSquareSize() < 100){
-						g.setColor(StatFunc.getColor(squares[i][j].getType()));
-						g.fillRect((int) p.getX(), (int) p.getY(), (int) getSquareSize(), (int) getSquareSize());
-					}else{
-						temp = StatFunc.typeToMapPart(squares[i][j]);
-						g.drawImage(tiles, 
-								(int) p.getX()						, (int) p.getY()					,
-								(int) p.getX() + getSquareSize()	, (int) p.getY() + getSquareSize(),
-								(int) temp.getX()					, (int) temp.getY()					,
-								(int) temp.getX() + 500				, (int) temp.getY() + 500		
-								,null);
-					}
+					drawSquare(g,p,i,j);
 				}
 			}
 		}
@@ -149,6 +154,26 @@ public class GameMap implements Refresh,SaveAble,ScreenDependent{
 			}
 		}
 		return s.toString();
+	}
+	private void drawSquare(Graphics g, final Pos p, final int x, final int y){
+		if(getSquareSize() < 100){
+			g.setColor(StatFunc.getColor(squares[x][y].getType()));
+			g.fillRect((int) p.getX(), (int) p.getY(), (int) getSquareSize(), (int) getSquareSize());
+			if(squares[x][y].getTeam() != null){
+				g.drawImage(Unit.spites, (int) p.getX(), (int) p.getY(), (int) (Unit.spites.getWidth() * getSquareSize() / 500.0), (int) (Unit.spites.getHeight() *  getSquareSize() / 500.0),null);
+			}
+		}else{
+			Pos temp = StatFunc.typeToMapPart(squares[x][y]);
+			g.drawImage(tiles, 
+					(int) p.getX()						, (int) p.getY()					,
+					(int) p.getX() + getSquareSize()	, (int) p.getY() + getSquareSize(),
+					(int) temp.getX()					, (int) temp.getY()					,
+					(int) temp.getX() + 500				, (int) temp.getY() + 500		
+					,null);
+			if(squares[x][y].getTeam() != null){
+				g.drawImage(Unit.spites, (int) p.getX(), (int) p.getY(), (int) (Unit.spites.getWidth() * getSquareSize() / 500.0), (int) (Unit.spites.getHeight() *  getSquareSize() / 500.0),null);
+			}
+		}
 	}
 	@Override
 	public void updateScreenDependency() {

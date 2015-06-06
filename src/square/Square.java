@@ -18,22 +18,25 @@ import units.Team;
  */
 public class Square implements Cloneable, SaveAble{
 	private int type;
-	private Team t;
 	private int imp = 0;
+	private Team team;
 	public Square(final int type){
 		if(type < 0 || type > 5){
 			throw new IllegalArgumentException("A square can only be of type 0-5. type = " + type);
 		}
 		this.type = type;
 	}
+	public Team getTeam(){
+		return team;
+	}
+	public void setTeam(Team t){
+		team = t;
+	}
 	public int getType(){
 		return type;
 	}
 	public int getImp(){
 		return imp;
-	}
-	public Team getTeam(){
-		return t;
 	}
 	public void setImp(int imp){
 		this.imp = imp;

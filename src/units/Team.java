@@ -1,9 +1,11 @@
 package units;
 
+import square.Square;
 import intrface.SaveAble;
 
 public class Team implements SaveAble {
 	private Unit[] team = new Unit[3];
+	private Square square;
 	public Team(){}
 	public boolean addUnit(Unit u){
 		for(int i = 0; i < 3; i++){
@@ -13,6 +15,12 @@ public class Team implements SaveAble {
 			}
 		}
 		return false;
+	}
+	public Square getSquare(){
+		return square;
+	}
+	public void setSquare(Square s){
+		square = s;
 	}
 	public boolean removeUnit(Unit u){
 		for(int i = 0; i < 3; i++){
@@ -40,5 +48,23 @@ public class Team implements SaveAble {
 	@Override
 	public String toSaveFormat(StringBuilder s) {
 		return null;
+	}
+	public Unit getUnit(int i){
+		return team[i];
+	}
+	public String toString(){
+		StringBuilder s = new StringBuilder();
+		s.append("(");
+		s.append(team[0]);
+		if(team[1] != null){
+			s.append(", ");
+			s.append(team[1]);
+		}
+		if(team[2] != null){
+			s.append(", ");
+			s.append(team[2]);
+		}
+		s.append(")");
+		return s.toString();
 	}
 }

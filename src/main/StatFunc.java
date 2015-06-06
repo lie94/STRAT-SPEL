@@ -270,6 +270,7 @@ public class StatFunc {
 				line = in.readLine();
 			}
 		}
+		in.close();
 		return out;
 	}
 }

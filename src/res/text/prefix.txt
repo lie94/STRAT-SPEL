@@ -1,0 +1,15 @@
+Kind
+Strong
+Captain
+General
+Apostle
+Archbishop
+Bishop
+Blessed
+Chief
+Despot
+Elder
+Pastor
+Praetor
+Saint
+Shaman
