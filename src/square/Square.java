@@ -1,5 +1,7 @@
 package square;
 
+import java.awt.Color;
+
 import intrface.SaveAble;
 import units.Team;
 
@@ -44,6 +46,26 @@ public class Square implements Cloneable, SaveAble{
 	@Override
 	public String toSaveFormat(StringBuilder s) {
 		s.append(type + ", " + imp);
+		return null;
+	}
+	public Color getColor(){
+		return getColor(type);
+	}
+	public static Color getColor(int i){
+		switch(i){
+		case 0:
+			return new Color(33,60,255);
+		case 1:
+			return new Color(81,188,255);
+		case 2:
+			return new Color(38,127,1);
+		case 3:
+			return new Color(127,255,255);
+		case 4:
+			return new Color(245,254,145);
+		case 5:
+			return new Color(128,128,128);
+		}
 		return null;
 	}
 }

@@ -1,20 +1,22 @@
 package units;
 
+import java.util.ArrayList;
+
 import square.Square;
 import intrface.SaveAble;
 
 public class Team implements SaveAble {
-	private Unit[] team = new Unit[3];
+	private ArrayList<Unit> team;
 	private Square square;
-	public Team(){}
-	public boolean addUnit(Unit u){
-		for(int i = 0; i < 3; i++){
-			if(team[i] == null){
-				team[i] = u;
-				return true;
-			}
+	public Team(){
+		team = new ArrayList<Unit>();
+	}
+	public boolean add(Unit u){
+		if(team.size() >= 3){
+			return false;
 		}
-		return false;
+		team.add(u);
+		return true;
 	}
 	public Square getSquare(){
 		return square;
@@ -22,47 +24,34 @@ public class Team implements SaveAble {
 	public void setSquare(Square s){
 		square = s;
 	}
-	public boolean removeUnit(Unit u){
-		for(int i = 0; i < 3; i++){
-			if(team[i].equals(u)){
-				team[i] = null;
-				if(i != 2)
-					sort();
-				return true;	
-			}
-		}
-		return false;
-	}
-	private void sort(){
-		for(int i = 0; i < 2; i++){
-			if(team[i] == null){
-				for(int j = i + 1; team[i] == null; j++){
-					if(team[j] != null){
-						team[i] = team[j];
-						team[j] = null;
-					}
-				}
-			}
-		}
+	public boolean remove(Unit u){
+		return team.remove(u);
 	}
 	@Override
 	public String toSaveFormat(StringBuilder s) {
 		return null;
 	}
-	public Unit getUnit(int i){
-		return team[i];
+	public ArrayList<Unit> getUnits(){
+		return team;
+	}
+	public Team generateRandom(){
+		team.add(new Unit());
+		team.add(new Unit());
+		team.add(new Unit());
+		return this;
 	}
 	public String toString(){
+		if(team.size() == 0){
+			return "()";
+		}
 		StringBuilder s = new StringBuilder();
 		s.append("(");
-		s.append(team[0]);
-		if(team[1] != null){
-			s.append(", ");
-			s.append(team[1]);
-		}
-		if(team[2] != null){
-			s.append(", ");
-			s.append(team[2]);
+		s.append(team.get(0));
+		if(team.size() > 1){
+			for(int i = 1; i < team.size(); i++){
+				s.append(", ");
+				s.append(team.get(i));
+			}
 		}
 		s.append(")");
 		return s.toString();

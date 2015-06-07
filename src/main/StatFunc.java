@@ -157,23 +157,6 @@ public class StatFunc {
 		}
 		return sum / numbers.length;
 	}
-	public static Color getColor(int i){
-		switch(i){
-		case 0:
-			return new Color(33,60,255);
-		case 1:
-			return new Color(81,188,255);
-		case 2:
-			return new Color(38,127,1);
-		case 3:
-			return new Color(127,255,255);
-		case 4:
-			return new Color(245,254,145);
-		case 5:
-			return new Color(128,128,128);
-		}
-		return null;
-	}
 	public static Pos typeToMapPart(int type){
 		switch(type){
 		case 0:
@@ -198,7 +181,7 @@ public class StatFunc {
 	private static Color avrageColor(Square[][] squares, int x, int y, int width, int height){
 		int [] arr = new int[6];
 		if(squares.length == width){
-			return getColor(squares[x][y].getType());
+			return squares[x][y].getColor();
 		}else{
 			System.out.println(squares.length > width);
 			System.out.println(((x + 1 ) * squares.length) / width);
@@ -216,7 +199,7 @@ public class StatFunc {
 					largest = arr[i];
 				}
 			}
-			return getColor(index);
+			return Square.getColor(index);
 		}
 	}
 	public static BufferedImage getMiniMap(GameMap map) {

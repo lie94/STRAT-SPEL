@@ -9,11 +9,15 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.Random;
 
 import players.Human;
 import players.Player;
+import square.Square;
+import units.Team;
 import main.Run;
 import main.StatFunc;
+import map.Board;
 import map.GameMap;
 import nav.Pos;
 import nav.Screen;
@@ -26,12 +30,14 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 	private Pos shiftScreen;
 	private boolean setSSNull;
 	private Player[] players;
+	private Board board;
 	public static Screen s;
 	public GameStateManager(Run r){
 		this.r = r;
 		s = new Screen((int) r.frame.getWidth(),r.frame.getHeight());
+		board = new Board();
 		try {
-			this.gs = new GameState(s,false);//CHANGE TO FALSE TO GENERATE A NEW MAP
+			this.gs = new GameState(s,board,false);//CHANGE TO FALSE TO GENERATE A NEW MAP
 		} catch (IOException e) {
 			e.printStackTrace();
 			r.frame.dispatchEvent(new WindowEvent(r.frame, WindowEvent.WINDOW_CLOSING));
@@ -40,8 +46,13 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 		moveScreen = new boolean[4];
 		players = new Player[1];
 		players[0] = new Human();
+		
 	}
 	public void update(){
+		if(board.isActive()){
+			board.update();
+			return;
+		}
 		gs.update();
 		for(int i = 0; i < 4; i++){
 			if(moveScreen[i]){
@@ -60,10 +71,13 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 			shiftScreen = null;
 			setSSNull = false;
 		}
-		
 	}
 	@Override
 	public void keyPressed(KeyEvent arg0) {
+		if(board.isActive()){
+			board.sendInput(arg0);
+			return;
+		}
 		int code = arg0.getKeyCode();
 		switch(code){
 		case 38:
@@ -84,6 +98,12 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 			break;
 		case KeyEvent.VK_SPACE:
 			gs = new GameState(s,GameMap.getSquareSize());
+		case KeyEvent.VK_1:
+			if(board.isActive()){
+				board.sendInput(arg0);
+			}else{
+				board.startFight(new Team().generateRandom(), new Team().generateRandom(), new Square(new Random().nextInt(6)));
+			}
 		}
 	}
 	@Override

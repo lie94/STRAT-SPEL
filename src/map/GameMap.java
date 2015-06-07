@@ -8,7 +8,6 @@ import intrface.ScreenDependent;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -16,7 +15,6 @@ import main.StatFunc;
 import nav.Pos;
 import nav.Screen;
 import square.Square;
-import units.Team;
 import units.Unit;
 
 public class GameMap implements Refresh,SaveAble,ScreenDependent{
@@ -33,8 +31,8 @@ public class GameMap implements Refresh,SaveAble,ScreenDependent{
 		MAX_WIDTH = squares.length * SQUARE_SIZE;
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
 		tiles = ImageIO.read(getClass().getResourceAsStream("/res/img/tiles.jpg"));
-		Random rn = new Random();
-		for(int i = 0; i < squares.length; i++){
+		//Random rn = new Random();
+		/*for(int i = 0; i < squares.length; i++){
 			for(int j = 0; j < squares[0].length; j++){
 				if(squares[i][j].getType() != 0 && squares[i][j].getType() != 1 && rn.nextInt(101) > 99){
 					
@@ -45,7 +43,7 @@ public class GameMap implements Refresh,SaveAble,ScreenDependent{
 					t.setSquare(squares[i][j]);
 				}
 			}
-		}
+		}*/
 	}
 	public GameMap(final int size, Screen s, final int square_size){
 		this.s = s;
@@ -157,7 +155,7 @@ public class GameMap implements Refresh,SaveAble,ScreenDependent{
 	}
 	private void drawSquare(Graphics g, final Pos p, final int x, final int y){
 		if(getSquareSize() < 100){
-			g.setColor(StatFunc.getColor(squares[x][y].getType()));
+			g.setColor(squares[x][y].getColor());
 			g.fillRect((int) p.getX(), (int) p.getY(), (int) getSquareSize(), (int) getSquareSize());
 			if(squares[x][y].getTeam() != null){
 				g.drawImage(Unit.spites, (int) p.getX(), (int) p.getY(), (int) (Unit.spites.getWidth() * getSquareSize() / 500.0), (int) (Unit.spites.getHeight() *  getSquareSize() / 500.0),null);

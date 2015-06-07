@@ -1,10 +1,12 @@
 package gamestate;
 
 import intrface.Refresh;
+
 import java.awt.Graphics;
 import java.io.IOException;
 
 import main.StatFunc;
+import map.Board;
 import map.GameMap;
 import map.MiniMap;
 import nav.Screen;
@@ -13,11 +15,13 @@ public class GameState implements Refresh{
 	private GameMap map;
 	private Screen s;
 	private MiniMap minimap;
-	GameState(Screen s, boolean loadMap) throws IOException{
+	private Board board;
+	GameState(Screen s, Board b, boolean loadMap) throws IOException{
 		if(loadMap)
 			map = StatFunc.loadMap("test",s,this);
 		else
 			map = new GameMap(1,s);
+		board = b;
 		minimap = new MiniMap(s,map);
 		
 		this.s = s;
@@ -32,6 +36,10 @@ public class GameState implements Refresh{
 		minimap.update();
 	}
 	public void draw(Graphics g){
+		if(board.isActive()){
+			board.draw(g);
+			return;
+		}
 		map.draw(g);
 		minimap.draw(g);
 	}
