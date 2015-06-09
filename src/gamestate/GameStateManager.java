@@ -1,5 +1,7 @@
 package gamestate;
 
+import gamestate.map.GameMap;
+
 import java.awt.MouseInfo;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -17,8 +19,6 @@ import square.Square;
 import units.Team;
 import main.Run;
 import main.StatFunc;
-import map.Board;
-import map.GameMap;
 import nav.Pos;
 import nav.Screen;
 

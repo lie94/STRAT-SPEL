@@ -1,8 +1,7 @@
 package nav;
 
+import gamestate.map.GameMap;
 import main.StatFunc;
-import map.GameMap;
-
 
 public class Screen extends Pos{
 	public static final double SPEED = 10;

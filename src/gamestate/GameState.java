@@ -1,14 +1,13 @@
 package gamestate;
 
+import gamestate.map.GameMap;
+import gamestate.map.MiniMap;
 import intrface.Refresh;
 
 import java.awt.Graphics;
 import java.io.IOException;
 
 import main.StatFunc;
-import map.Board;
-import map.GameMap;
-import map.MiniMap;
 import nav.Screen;
 
 public class GameState implements Refresh{

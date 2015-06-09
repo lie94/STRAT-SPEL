@@ -1,4 +1,4 @@
-package map;
+package gamestate.map;
 
 import java.awt.Color;
 import java.awt.Graphics;

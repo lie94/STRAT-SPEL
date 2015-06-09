@@ -1,8 +1,12 @@
-package map;
+package gamestate;
 
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
+import animations.AnimatedChar;
+import animations.Animation;
+import animations.ImageRelayer;
 import nav.Screen;
 import intrface.Refresh;
 import square.Square;
@@ -11,15 +15,20 @@ import units.Unit;
 
 public class Board implements Refresh{
 	private boolean isActive;
-	private Team team1, team2;
+	private ArrayList<AnimatedChar> animations;
 	Square square;
 	public boolean isActive(){
 		return isActive;
 	}
 	public void startFight(Team t1, Team t2, Square s){
 		this.square = s;
-		this.team1 = t1;
-		this.team2 = t2;
+		animations = new ArrayList<AnimatedChar>();
+		for(Unit u : t1.getUnits()){
+			animations.add(new AnimatedChar(u));
+		}
+		for(Unit u : t2.getUnits()){
+			animations.add(new AnimatedChar(u));
+		}
 		setActive(true);
 	}
 	private void setActive(boolean b){
@@ -27,17 +36,16 @@ public class Board implements Refresh{
 	}
 	@Override
 	public void update() {
-		
+		for(Animation a : animations){
+			a.update();
+		}
 	}
 	@Override
 	public void draw(Graphics g){
 		g.setColor(square.getColor());
 		g.fillRect(0, 0, Screen.WIDTH, Screen.HEIGHT);
-		for(Unit u : team1.getUnits()){
-			u.toString();
-		}
-		for(Unit u : team2.getUnits()){
-			u.toString();
+		for(int i = 0 ; i < animations.size(); i++){
+			animations.get(i).draw(g, 200 + i * (ImageRelayer.CHAR_SPRITES_WIDTH + 50), 700 - ImageRelayer.CHAR_SPRITES_HEIGHT);
 		}
 	}
 	@Override
@@ -47,8 +55,7 @@ public class Board implements Refresh{
 	public void sendInput(KeyEvent arg0) {
 		switch(arg0.getKeyCode()){
 			case KeyEvent.VK_ESCAPE:
-				team1 = null;
-				team2 = null;
+				animations = null;
 				square = null;
 				isActive = false;
 				break;

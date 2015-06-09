@@ -1,4 +1,4 @@
-package map;
+package gamestate.map;
 
 import gamestate.GameStateManager;
 import intrface.Refresh;
@@ -15,7 +15,6 @@ import main.StatFunc;
 import nav.Pos;
 import nav.Screen;
 import square.Square;
-import units.Unit;
 
 public class GameMap implements Refresh,SaveAble,ScreenDependent{
 	private Square[][] squares;
@@ -31,19 +30,6 @@ public class GameMap implements Refresh,SaveAble,ScreenDependent{
 		MAX_WIDTH = squares.length * SQUARE_SIZE;
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
 		tiles = ImageIO.read(getClass().getResourceAsStream("/res/img/tiles.jpg"));
-		//Random rn = new Random();
-		/*for(int i = 0; i < squares.length; i++){
-			for(int j = 0; j < squares[0].length; j++){
-				if(squares[i][j].getType() != 0 && squares[i][j].getType() != 1 && rn.nextInt(101) > 99){
-					
-					Team t = new Team();
-					t.addUnit(new Unit());
-					System.out.println(t.getUnit(0).toString());
-					squares[i][j].setTeam(t);
-					t.setSquare(squares[i][j]);
-				}
-			}
-		}*/
 	}
 	public GameMap(final int size, Screen s, final int square_size){
 		this.s = s;
@@ -157,8 +143,9 @@ public class GameMap implements Refresh,SaveAble,ScreenDependent{
 		if(getSquareSize() < 100){
 			g.setColor(squares[x][y].getColor());
 			g.fillRect((int) p.getX(), (int) p.getY(), (int) getSquareSize(), (int) getSquareSize());
-			if(squares[x][y].getTeam() != null){
-				g.drawImage(Unit.spites, (int) p.getX(), (int) p.getY(), (int) (Unit.spites.getWidth() * getSquareSize() / 500.0), (int) (Unit.spites.getHeight() *  getSquareSize() / 500.0),null);
+			if(squares[x][y].hasUnit()){
+				// TODO
+				//g.drawImage(Fighter.spites, (int) p.getX(), (int) p.getY(), (int) (Fighter.spites.getWidth() * getSquareSize() / 500.0), (int) (Fighter.spites.getHeight() *  getSquareSize() / 500.0),null);
 			}
 		}else{
 			Pos temp = StatFunc.typeToMapPart(squares[x][y]);
@@ -168,8 +155,9 @@ public class GameMap implements Refresh,SaveAble,ScreenDependent{
 					(int) temp.getX()					, (int) temp.getY()					,
 					(int) temp.getX() + 500				, (int) temp.getY() + 500		
 					,null);
-			if(squares[x][y].getTeam() != null){
-				g.drawImage(Unit.spites, (int) p.getX(), (int) p.getY(), (int) (Unit.spites.getWidth() * getSquareSize() / 500.0), (int) (Unit.spites.getHeight() *  getSquareSize() / 500.0),null);
+			if(squares[x][y].hasUnit()){
+				// TODO
+				//g.drawImage(Fighter.spites, (int) p.getX(), (int) p.getY(), (int) (Fighter.spites.getWidth() * getSquareSize() / 500.0), (int) (Fighter.spites.getHeight() *  getSquareSize() / 500.0),null);
 			}
 		}
 	}

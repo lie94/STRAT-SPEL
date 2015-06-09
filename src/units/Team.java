@@ -3,15 +3,16 @@ package units;
 import java.util.ArrayList;
 
 import square.Square;
+import intrface.ControlledUnits;
 import intrface.SaveAble;
 
-public class Team implements SaveAble {
-	private ArrayList<Unit> team;
+public class Team implements SaveAble, ControlledUnits{
+	private ArrayList<Fighter> team;
 	private Square square;
 	public Team(){
-		team = new ArrayList<Unit>();
+		team = new ArrayList<Fighter>();
 	}
-	public boolean add(Unit u){
+	public boolean add(Fighter u){
 		if(team.size() >= 3){
 			return false;
 		}
@@ -24,20 +25,20 @@ public class Team implements SaveAble {
 	public void setSquare(Square s){
 		square = s;
 	}
-	public boolean remove(Unit u){
+	public boolean remove(Fighter u){
 		return team.remove(u);
 	}
 	@Override
 	public String toSaveFormat(StringBuilder s) {
 		return null;
 	}
-	public ArrayList<Unit> getUnits(){
+	public ArrayList<? extends Unit> getUnits(){
 		return team;
 	}
 	public Team generateRandom(){
-		team.add(new Unit());
-		team.add(new Unit());
-		team.add(new Unit());
+		team.add(new Fighter());
+		team.add(new Fighter());
+		team.add(new Fighter());
 		return this;
 	}
 	public String toString(){

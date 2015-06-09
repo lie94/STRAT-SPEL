@@ -1,6 +1,7 @@
 package main;
 
 import gamestate.GameState;
+import gamestate.map.GameMap;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -11,7 +12,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Random;
 
-import map.GameMap;
 import nav.Pos;
 import nav.Screen;
 import square.Square;

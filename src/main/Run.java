@@ -13,6 +13,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import animations.ImageRelayer;
+
 public class Run extends Canvas implements Runnable{
 	private static final long serialVersionUID = 1L;
 	private static final int TARGET_FPS = 60;
@@ -64,6 +66,12 @@ public class Run extends Canvas implements Runnable{
 		running = true;
 		LoadingScreen l = new LoadingScreen();
 		new Thread(l).start();
+		try {
+			new ImageRelayer(this);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+		}
 		gsm = new GameStateManager(this);
 		addKeyListener((KeyListener) gsm);
 		addMouseWheelListener(gsm);
