@@ -2,8 +2,7 @@ package square;
 
 import java.awt.Color;
 
-import intrface.ControlledUnits;
-import intrface.SaveAble;
+import units.Team;
 
 /**
  * There are 6 different types of squares
@@ -18,20 +17,20 @@ import intrface.SaveAble;
  * @author Felix
  *
  */
-public class Square implements Cloneable, SaveAble{
+public class Square implements Cloneable{
 	private int type;
 	private int imp = 0;
-	private ControlledUnits units;
+	private Team units;
 	public Square(final int type){
 		if(type < 0 || type > 5){
 			throw new IllegalArgumentException("A square can only be of type 0-5. type = " + type);
 		}
 		this.type = type;
 	}
-	public ControlledUnits getTeam(){
+	public Team getTeam(){
 		return units;
 	}
-	public void setUnits(ControlledUnits pc){
+	public void setUnits(Team pc){
 		units = pc;
 	}
 	public int getType(){
@@ -43,10 +42,9 @@ public class Square implements Cloneable, SaveAble{
 	public void setImp(int imp){
 		this.imp = imp;
 	}
-	@Override
-	public String toSaveFormat(StringBuilder s) {
+	public StringBuilder save(StringBuilder s) {
 		s.append(type + ", " + imp);
-		return null;
+		return s;
 	}
 	public Color getColor(){
 		return getColor(type);

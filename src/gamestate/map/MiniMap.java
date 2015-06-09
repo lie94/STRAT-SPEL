@@ -1,5 +1,8 @@
 package gamestate.map;
 
+import gamestate.GameState;
+import gamestate.GameStateManager;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -7,32 +10,43 @@ import java.awt.image.BufferedImage;
 import main.StatFunc;
 import nav.Pos;
 import nav.Screen;
-import intrface.Refresh;
-import intrface.ScreenDependent;
 
-public class MiniMap implements ScreenDependent,Refresh{
+public class MiniMap extends GameState{
 	private BufferedImage map;
 	private Pos position, size;
 	private int borderthickness;
-	private Screen s;
 	private GameMap m;
-	public MiniMap(Screen s, GameMap m){
+	public MiniMap(Screen s,GameStateManager gsm, GameMap m){
+		super(s,gsm);
 		map = StatFunc.getMiniMap(m);
-		this.s = s;
 		this.m = m;
 		borderthickness = (int) Screen.WIDTH / 160;
 		size = new Pos(Screen.WIDTH / 10,(((double) (map.getHeight()) / map.getWidth()) * (Screen.WIDTH / 10)));
 		position = new Pos(Screen.WIDTH / 80, Screen.HEIGHT - size.getY() - 2 * borderthickness - (Screen.WIDTH / 80));
 	}
 	
-	@Override
-	public void update() {
-		updateScreenDependency();
-	}
 	public GameMap getMap(){
 		return m;
 	}
-	@Override
+	public Pos getPos(){
+		return position;
+	}
+	public Pos getSize(){
+		return size;
+	}
+	public int getThickness(){
+		return borderthickness;
+	}
+	public void update() {
+		if(size.getX() != (Screen.WIDTH / 10)){
+			size.setX((Screen.WIDTH / 10));
+			size.setY(((double) (map.getHeight()) / map.getWidth()) * size.getX());
+		}
+		if(position.getX() != Screen.WIDTH / 80 || position.getY() != Screen.HEIGHT - size.getY() - 2 * borderthickness - Screen.WIDTH / 80)
+			position.setPos(Screen.WIDTH / 80, Screen.HEIGHT - size.getY() - 2 * borderthickness - Screen.WIDTH / 80);
+		if(borderthickness != (int) Screen.WIDTH / 160)
+			borderthickness = (int) Screen.WIDTH / 160;
+	}
 	public void draw(Graphics g) {
 		g.setColor(Color.BLACK);
 		//Background
@@ -86,6 +100,65 @@ public class MiniMap implements ScreenDependent,Refresh{
 		}
 		
 	}
+	@Override
+	public void endTurn() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public StringBuilder save(StringBuilder s) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void sendMousePress(int k, int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendMouseRelease(int k, int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendKeyboardPress(int k) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendKeyboardRelease(int k) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendMouseWheel(int k, int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private Pos translatePos(Pos p){
+		return new Pos(translateX(p.getX()),translateY(p.getY()));
+	}
+
+	private double translateY(double y){
+		return (y / GameMap.MAX_HEIGHT) * size.getY();
+	}
+
+	/**
+	 * Translates a coord in the screen to a coord in the minimap
+	 * @param x
+	 * @return
+	 */
+	private double translateX(double x){
+		return (x / GameMap.MAX_WIDTH) * size.getX();
+	}
+
 	/**
 	 * 	0		1
 	 *  ---------
@@ -104,36 +177,4 @@ public class MiniMap implements ScreenDependent,Refresh{
 		corners[3] = translatePos(temp.addX(-Screen.WIDTH)).add(position.getX() + borderthickness, position.getY() + borderthickness);
 		return corners;
 	}
-	/**
-	 * Translates a coord in the screen to a coord in the minimap
-	 * @param x
-	 * @return
-	 */
-	private double translateX(double x){
-		return (x / GameMap.MAX_WIDTH) * size.getX();
-	}
-	private double translateY(double y){
-		return (y / GameMap.MAX_HEIGHT) * size.getY();
-	}
-	private Pos translatePos(Pos p){
-		return new Pos(translateX(p.getX()),translateY(p.getY()));
-	}
-	@Override
-	public void newTurn() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateScreenDependency() {
-		if(size.getX() != (Screen.WIDTH / 10)){
-			size.setX((Screen.WIDTH / 10));
-			size.setY(((double) (map.getHeight()) / map.getWidth()) * size.getX());
-		}
-		if(position.getX() != Screen.WIDTH / 80 || position.getY() != Screen.HEIGHT - size.getY() - 2 * borderthickness - Screen.WIDTH / 80)
-			position.setPos(Screen.WIDTH / 80, Screen.HEIGHT - size.getY() - 2 * borderthickness - Screen.WIDTH / 80);
-		if(borderthickness != (int) Screen.WIDTH / 160)
-			borderthickness = (int) Screen.WIDTH / 160;
-	}
-	
 }

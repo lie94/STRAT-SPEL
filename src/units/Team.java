@@ -3,10 +3,8 @@ package units;
 import java.util.ArrayList;
 
 import square.Square;
-import intrface.ControlledUnits;
-import intrface.SaveAble;
 
-public class Team implements SaveAble, ControlledUnits{
+public class Team{
 	private ArrayList<Fighter> team;
 	private Square square;
 	public Team(){
@@ -28,8 +26,7 @@ public class Team implements SaveAble, ControlledUnits{
 	public boolean remove(Fighter u){
 		return team.remove(u);
 	}
-	@Override
-	public String toSaveFormat(StringBuilder s) {
+	public StringBuilder save(StringBuilder s) {
 		return null;
 	}
 	public ArrayList<? extends Unit> getUnits(){

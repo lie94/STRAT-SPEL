@@ -8,12 +8,14 @@ import animations.AnimatedChar;
 import animations.Animation;
 import animations.ImageRelayer;
 import nav.Screen;
-import intrface.Refresh;
 import square.Square;
 import units.Team;
 import units.Unit;
 
-public class Board implements Refresh{
+public class Board extends GameState{
+	protected Board(Screen s, GameStateManager gsm) {
+		super(s, gsm);
+	}
 	private boolean isActive;
 	private ArrayList<AnimatedChar> animations;
 	Square square;
@@ -48,10 +50,6 @@ public class Board implements Refresh{
 			animations.get(i).draw(g, 200 + i * (ImageRelayer.CHAR_SPRITES_WIDTH + 50), 700 - ImageRelayer.CHAR_SPRITES_HEIGHT);
 		}
 	}
-	@Override
-	public void newTurn() {
-		
-	}
 	public void sendInput(KeyEvent arg0) {
 		switch(arg0.getKeyCode()){
 			case KeyEvent.VK_ESCAPE:
@@ -61,5 +59,40 @@ public class Board implements Refresh{
 				break;
 		}
 	
+	}
+	@Override
+	public void endTurn() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public StringBuilder save(StringBuilder s) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void sendMousePress(int k, int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void sendMouseRelease(int k, int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void sendKeyboardPress(int k) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void sendKeyboardRelease(int k) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void sendMouseWheel(int k, int x, int y) {
+		// TODO Auto-generated method stub
+		
 	}
 }

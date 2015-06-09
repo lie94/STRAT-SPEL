@@ -79,6 +79,11 @@ public class Pos implements Cloneable{
 	public Vector toVector(){
 		return new Vector(x,y);
 	}
+	public Pos changeSign(){
+		x = -x;
+		y = -y;
+		return this;
+	}
 	public String toString(){
 		return "(" + x + ", " + y + ")";
 	}

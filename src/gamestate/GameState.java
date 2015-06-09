@@ -1,56 +1,30 @@
 package gamestate;
 
-import gamestate.map.GameMap;
-import gamestate.map.MiniMap;
-import intrface.Refresh;
-
 import java.awt.Graphics;
-import java.io.IOException;
 
-import main.StatFunc;
+import nav.Pos;
 import nav.Screen;
 
-public class GameState implements Refresh{
-	private GameMap map;
-	private Screen s;
-	private MiniMap minimap;
-	private Board board;
-	GameState(Screen s, Board b, boolean loadMap) throws IOException{
-		if(loadMap)
-			map = StatFunc.loadMap("test",s,this);
-		else
-			map = new GameMap(1,s);
-		board = b;
-		minimap = new MiniMap(s,map);
-		
+public abstract class GameState{
+	protected Screen s;
+	private GameStateManager gsm;
+	protected GameState(Screen s, GameStateManager gsm){
 		this.s = s;
+		this.gsm = gsm;
 	}
-	GameState(Screen s, int square_width){
-		map = new GameMap(1,s,square_width);
-		minimap = new MiniMap(s,map);
-		map.setSquareDim(square_width);
+	protected void stop(){
+		gsm.stop();
 	}
-	public void update(){
-		map.update();
-		minimap.update();
+	protected Pos getScreenPos(){
+		return gsm.getFramePos();
 	}
-	public void draw(Graphics g){
-		if(board.isActive()){
-			board.draw(g);
-			return;
-		}
-		map.draw(g);
-		minimap.draw(g);
-	}
-	public Screen getScreen(){
-		return s;
-	}
-	@Override
-	public void newTurn() {
-		// TODO Auto-generated method stub
-		
-	}
-	public GameMap getMap(){
-		return map;
-	}
+	public abstract void update();
+	public abstract void draw(Graphics g);
+	public abstract void endTurn();
+	public abstract StringBuilder save(StringBuilder s);
+	public abstract void sendMousePress(int k, int x, int y);
+	public abstract void sendMouseRelease(int k, int x, int y);
+	public abstract void sendKeyboardPress(int k);
+	public abstract void sendKeyboardRelease(int k);
+	public abstract void sendMouseWheel(int k, int x, int y);
 }
