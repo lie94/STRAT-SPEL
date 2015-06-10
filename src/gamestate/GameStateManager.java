@@ -20,7 +20,7 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 	private GameState gs;
 	private Run r;
 	public static Screen s;
-	public GameStateManager(Run r){
+	public GameStateManager(Run r) {
 		this.r = r;
 		s = new Screen((int) r.frame.getWidth(),r.frame.getHeight());
 		try {
@@ -31,13 +31,13 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 		} 
 		s.setPos(GameMap.MAX_WIDTH / 2 - Screen.WIDTH / 2, GameMap.MAX_HEIGHT / 2 - Screen.HEIGHT / 2);
 	}
-	public void update(){
+	public void update() {
 		gs.update();
 	}
-	public void draw(Graphics g){
+	public void draw(Graphics g) {
 		gs.draw(g);
 	}
-	public void stop(){
+	public void stop() {
 		r.stop();
 	}
 	@Override
@@ -71,7 +71,7 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 	public void mouseReleased(MouseEvent arg0) {
 		gs.sendMouseRelease(arg0.getButton(), arg0.getX(), arg0.getY());
 	}
-	public Pos getFramePos(){
+	public Pos getFramePos() {
 		return new Pos(r.frame.getLocationOnScreen());
 	}
 

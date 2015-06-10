@@ -5,6 +5,7 @@ import gamestate.GameStateManager;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.MouseInfo;
 import java.awt.image.BufferedImage;
 
 import main.StatFunc;
@@ -15,19 +16,21 @@ public class MiniMap extends GameState{
 	private BufferedImage map;
 	private Pos position, size;
 	private int borderthickness;
-	private GameMap m;
+	//private GameMap m;
+	//Follow screen
+	private boolean followScreen;
 	public MiniMap(Screen s,GameStateManager gsm, GameMap m){
 		super(s,gsm);
 		map = StatFunc.getMiniMap(m);
-		this.m = m;
+		//this.m = m;
 		borderthickness = (int) Screen.WIDTH / 160;
 		size = new Pos(Screen.WIDTH / 10,(((double) (map.getHeight()) / map.getWidth()) * (Screen.WIDTH / 10)));
 		position = new Pos(Screen.WIDTH / 80, Screen.HEIGHT - size.getY() - 2 * borderthickness - (Screen.WIDTH / 80));
 	}
 	
-	public GameMap getMap(){
+	/*public GameMap getMap(){
 		return m;
-	}
+	}*/
 	public Pos getPos(){
 		return position;
 	}
@@ -44,6 +47,17 @@ public class MiniMap extends GameState{
 		}
 		if(position.getX() != Screen.WIDTH / 80 || position.getY() != Screen.HEIGHT - size.getY() - 2 * borderthickness - Screen.WIDTH / 80)
 			position.setPos(Screen.WIDTH / 80, Screen.HEIGHT - size.getY() - 2 * borderthickness - Screen.WIDTH / 80);
+		if(followScreen){
+			// TODO NÅGOT FUNGERAR INTe
+			Pos temp = new Pos(MouseInfo.getPointerInfo().getLocation());
+			if(isInMiniMapBorders(temp)){
+				Pos move_screen = new Pos(	(double) (temp.getX() - position.getX() - borderthickness) / size.getX(), 
+											(double) (temp.getY() - position.getY() - borderthickness) / size.getY());
+				s.setPos(move_screen.getX() * GameMap.MAX_WIDTH - Screen.WIDTH / 2, move_screen.getY() * GameMap.MAX_HEIGHT - Screen.HEIGHT / 2);
+			}else{
+				followScreen = false;
+			}
+		}
 		if(borderthickness != (int) Screen.WIDTH / 160)
 			borderthickness = (int) Screen.WIDTH / 160;
 	}
@@ -115,30 +129,42 @@ public class MiniMap extends GameState{
 	@Override
 	public void sendMousePress(int k, int x, int y) {
 		// TODO Auto-generated method stub
-		
+		if(k == 1) { //&& move_screen == null ){
+			followScreen = true;
+		}
 	}
 
 	@Override
 	public void sendMouseRelease(int k, int x, int y) {
 		// TODO Auto-generated method stub
+		if(k == 1) {
+			followScreen = false;
+		}
 		
 	}
 
 	@Override
-	public void sendKeyboardPress(int k) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void sendKeyboardPress(int k) {}
 
 	@Override
-	public void sendKeyboardRelease(int k) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void sendKeyboardRelease(int k) {}
 
 	@Override
-	public void sendMouseWheel(int k, int x, int y) {
-		// TODO Auto-generated method stub
+	public void sendMouseWheel(int k, int x, int y) {}
+	public boolean isInMiniMap(Pos p){
+		return isInMiniMap((int) p.getX(),(int) p.getY());
+	}
+	public boolean isInMiniMap(int x, int y)  {
+		if(		position.getX() <= x && position.getX() + size.getX() + 2 * borderthickness >= x &&
+				position.getY() <= y && position.getY() + size.getY() + 2 * borderthickness >= y)
+			return true;
+		return false;
+	}
+	public boolean isInMiniMapBorders(Pos p){
+		if(		p.getX() >= position.getX() + borderthickness && p.getX() <= position.getX() + size.getX() + borderthickness &&
+				p.getY() >= position.getY() + borderthickness && p.getY() <= position.getY() + size.getY() + borderthickness)
+				return true;
+		return false;
 		
 	}
 
@@ -158,7 +184,6 @@ public class MiniMap extends GameState{
 	private double translateX(double x){
 		return (x / GameMap.MAX_WIDTH) * size.getX();
 	}
-
 	/**
 	 * 	0		1
 	 *  ---------

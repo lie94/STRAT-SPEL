@@ -32,7 +32,8 @@ public class GameMap extends GameState{
 	private boolean setSSNull;
 	//Zoom with mouse wheel
 	private int mouseWheelRot = 0;
-	public GameMap(Screen s, GameStateManager gsm) throws IOException{
+	
+	public GameMap(Screen s, GameStateManager gsm) throws IOException {
 		super(s,gsm);
 		this.s = s;
 		SQUARE_SIZE = STD_SQUARE_MAX_SIZE; 
@@ -43,7 +44,7 @@ public class GameMap extends GameState{
 		minimap = new MiniMap(s,gsm,this);
 
 	}
-	public GameMap(int width, int height, Screen s, GameStateManager gsm) throws IOException{
+	public GameMap(int width, int height, Screen s, GameStateManager gsm) throws IOException {
 		super(s,gsm);
 		squares = new Square[width][height];
 		this.s = s;
@@ -75,7 +76,7 @@ public class GameMap extends GameState{
 		}
 		minimap.draw(g);
 	}
-	public StringBuilder save(StringBuilder s){
+	public StringBuilder save(StringBuilder s) {
 		String new_line = System.getProperty("line.separator");
 		s.append("SX LENGTH: " + squares.length);
 		s.append(new_line);
@@ -92,12 +93,13 @@ public class GameMap extends GameState{
 	}
 	@Override
 	public void update() {
-		for(int i = 0; i < 4; i++){
+		minimap.update();
+		for(int i = 0; i < 4; i++) {
 			if(moveScreen[i]){
 				s.move(i,26);
 			}
 		}
-		if(shiftScreen != null){
+		if(shiftScreen != null) {
 			Pos temp = new Pos(MouseInfo.getPointerInfo().getLocation());
 			Pos ScreenPos = getScreenPos();
 			temp.add(ScreenPos.changeSign());
@@ -105,7 +107,7 @@ public class GameMap extends GameState{
 			shiftScreen = temp.clone();
 			s.correctPos();
 		}
-		if(setSSNull){
+		if(setSSNull) {
 			shiftScreen = null;
 			setSSNull = false;
 		}
@@ -114,7 +116,6 @@ public class GameMap extends GameState{
 	@Override
 	public void endTurn() {
 		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void sendKeyboardPress(int k) {
@@ -155,15 +156,27 @@ public class GameMap extends GameState{
 		}
 	}
 	@Override
-	public void sendMousePress(int k, int x, int y) {
-		if(isInMiniMap(x,y))
+	public void sendMousePress(final int k, int x, int y) {
+		if(minimap.isInMiniMap(x,y)){
+			x = x - (int) minimap.getPos().getX() - minimap.getThickness();
+			y = y - (int) minimap.getPos().getY() - minimap.getThickness();
+			if(x > 0 && y > 0 && x <= minimap.getSize().getX() && y <= minimap.getSize().getY())
+				minimap.sendMousePress(k,x,y);
 			return;
+		}
 		if(k == 1){
 			shiftScreen = new Pos(x,y);
 		}
 	}
 	@Override
 	public void sendMouseRelease(int k, int x, int y) {
+		if(minimap.isInMiniMap(x,y)){
+			x = x - (int) minimap.getPos().getX() - minimap.getThickness();
+			y = y - (int) minimap.getPos().getY() - minimap.getThickness();
+			if(x > 0 && y > 0 && x <= minimap.getSize().getX() && y <= minimap.getSize().getY())
+				minimap.sendMouseRelease(k,x,y);
+			return;
+		}
 		if(k == 1)
 			setSSNull = true;
 	}
@@ -171,21 +184,13 @@ public class GameMap extends GameState{
 	public void sendMouseWheel(int k, int x, int y) {
 		mouseWheelRot = k;
 	}
-	public static int getSquareSize(){
+	public static int getSquareSize() {
 		return SQUARE_SIZE;
 	}
-	public Square[][] getSquares(){
+	public Square[][] getSquares() {
 		return squares;
 	}
-	private boolean isInMiniMap(int x, int y){
-		Pos position = minimap.getPos();
-		Pos size = minimap.getSize();
-		if(		position.getX() <= x && position.getX() + size.getX() + minimap.getThickness() >= x &&
-				position.getY() <= y && position.getY() + size.getY() + minimap.getThickness() >= y)
-			return true;
-		return false;
-	}
-	private void changeSquareSize(int i){
+	private void changeSquareSize(int i) {
 		if(mouseWheelRot != 0){
 			if(i == -1){
 				setSquareSize(1.2 * SQUARE_SIZE);
@@ -197,7 +202,7 @@ public class GameMap extends GameState{
 		}
 		mouseWheelRot = 0;
 	}
-	private void setSquareSize(double d){
+	private void setSquareSize(double d) {
 		if((int) d * squares[0].length * 0.9 < Screen.HEIGHT || (int) d * squares.length * 0.9 < Screen.WIDTH)
 			return;
 		if(d > 300)
@@ -207,22 +212,22 @@ public class GameMap extends GameState{
 		updateScreenDependency();
 		s.setPos(new Pos(oldMiddle.getX() * MAX_WIDTH - Screen.WIDTH / 2, oldMiddle.getY() * MAX_HEIGHT - Screen.HEIGHT / 2));
 	}
-	private Pos getPosOfSquare(int i, int j){
+	private Pos getPosOfSquare(int i, int j) {
 		return new Pos(SQUARE_SIZE * i, SQUARE_SIZE * j);
 	}
-	private void updateScreenDependency(){
+	private void updateScreenDependency() {
 		MAX_WIDTH = squares.length * SQUARE_SIZE;
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
 	}
-	private void drawSquare(Graphics g, final Pos p, final int x, final int y){
-		if(getSquareSize() < 100){
+	private void drawSquare(Graphics g, final Pos p, final int x, final int y) {
+		if(getSquareSize() < 100) {
 			g.setColor(squares[x][y].getColor());
 			g.fillRect((int) p.getX(), (int) p.getY(), (int) getSquareSize(), (int) getSquareSize());
 			if(squares[x][y].hasUnit()){
 				// TODO
 				//g.drawImage(Fighter.spites, (int) p.getX(), (int) p.getY(), (int) (Fighter.spites.getWidth() * getSquareSize() / 500.0), (int) (Fighter.spites.getHeight() *  getSquareSize() / 500.0),null);
 			}
-		}else{
+		} else {
 			Pos temp = StatFunc.typeToMapPart(squares[x][y]);
 			g.drawImage(tiles, 
 					(int) p.getX()						, (int) p.getY()					,
@@ -230,7 +235,7 @@ public class GameMap extends GameState{
 					(int) temp.getX()					, (int) temp.getY()					,
 					(int) temp.getX() + 500				, (int) temp.getY() + 500		
 					,null);
-			if(squares[x][y].hasUnit()){
+			if(squares[x][y].hasUnit()) {
 				// TODO
 				//g.drawImage(Fighter.spites, (int) p.getX(), (int) p.getY(), (int) (Fighter.spites.getWidth() * getSquareSize() / 500.0), (int) (Fighter.spites.getHeight() *  getSquareSize() / 500.0),null);
 			}

@@ -3,6 +3,7 @@ import gamestate.GameStateManager;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyListener;
@@ -35,7 +36,7 @@ public class Run extends Canvas implements Runnable{
 	/**
 	 * Initiates the frame and starts the key listener
 	 */
-	@SuppressWarnings("static-access")
+	@SuppressWarnings({ "static-access", "deprecation" })
 	Run(){
 		frame = new JFrame(NAME);
 		
@@ -57,6 +58,8 @@ public class Run extends Canvas implements Runnable{
 		}
 		
 		frame.pack();
+		
+		frame.setCursor(Cursor.getPredefinedCursor(3));
 		
 		frame.setVisible(true);
 		
@@ -83,6 +86,7 @@ public class Run extends Canvas implements Runnable{
 		}
 		l.stop();
 		new Thread(this).start();
+		frame.setCursor(Cursor.DEFAULT_CURSOR);
 	}
 	public synchronized void stop(){
 		running = false;

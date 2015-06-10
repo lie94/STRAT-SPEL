@@ -25,16 +25,21 @@ public class Pos implements Cloneable{
 		this.y = y;
 		return this;
 	}
-	public Vector sub(Pos p){
-		return new Vector(x - p.getX(), y - p.getY());
-	}
-	public Vector sub(Point p){
-		return new Vector(x - p.getX(), y - p.getY());
+	public Pos setPos(Pos p){
+		x = p.getX();
+		y = p.getY();
+		return this;
 	}
 	public Pos setPos(Point p){
 		x = p.getX();
 		y = p.getY();
 		return this;
+	}
+	public Vector sub(Pos p){
+		return new Vector(x - p.getX(), y - p.getY());
+	}
+	public Vector sub(Point p){
+		return new Vector(x - p.getX(), y - p.getY());
 	}
 	public Pos add(Pos p){
 		x += p.getX();

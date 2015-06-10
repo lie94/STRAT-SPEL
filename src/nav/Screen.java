@@ -22,10 +22,15 @@ public class Screen extends Pos{
 		x = 0;
 		y = 0;
 	}
-	public void setPos(Pos p){
-		x = p.getX();
-		y = p.getY();
+	public Screen setPos(Pos p){
+		super.setPos(p);
 		correctPos();
+		return this;
+	}
+	public Screen setPos(double x, double y){
+		super.setPos(x, y);
+		correctPos();
+		return this;
 	}
 	public void correctPos(){
 		if(y < 0)
