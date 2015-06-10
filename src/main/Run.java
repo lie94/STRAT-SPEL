@@ -14,7 +14,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
-import animations.ImageRelayer;
+import animations.AnimationInit;
 
 public class Run extends Canvas implements Runnable{
 	private static final long serialVersionUID = 1L;
@@ -36,7 +36,7 @@ public class Run extends Canvas implements Runnable{
 	/**
 	 * Initiates the frame and starts the key listener
 	 */
-	@SuppressWarnings({ "static-access", "deprecation" })
+	@SuppressWarnings({ "static-access" })
 	Run(){
 		frame = new JFrame(NAME);
 		
@@ -65,12 +65,13 @@ public class Run extends Canvas implements Runnable{
 		
 		frame.setLocationRelativeTo(null);
 	}
+	@SuppressWarnings("deprecation")
 	public synchronized void start(){
 		running = true;
 		LoadingScreen l = new LoadingScreen();
 		new Thread(l).start();
 		try {
-			new ImageRelayer(this);
+			new AnimationInit();
 		} catch (Exception e1) {
 			e1.printStackTrace();
 			frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));

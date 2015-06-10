@@ -3,6 +3,7 @@ package gamestate.map;
 import gamestate.GameState;
 import gamestate.GameStateManager;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.MouseInfo;
 import java.awt.event.KeyEvent;
@@ -25,14 +26,18 @@ public class GameMap extends GameState{
 	private BufferedImage tiles;
 	private boolean[] moveScreen = new boolean[4];
 	private MiniMap minimap;
-	
+	//Grid
+	private boolean showGrid;
+	private static Color gridColor;
 	
 	//Shift screen when pressing left click
 	private Pos shiftScreen;
 	private boolean setSSNull;
 	//Zoom with mouse wheel
 	private int mouseWheelRot = 0;
-	
+	//Highligt square
+	private Pos highlightedSquare;
+	private static Color highlight;
 	public GameMap(Screen s, GameStateManager gsm) throws IOException {
 		super(s,gsm);
 		this.s = s;
@@ -42,7 +47,13 @@ public class GameMap extends GameState{
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
 		tiles = ImageIO.read(getClass().getResourceAsStream("/res/img/tiles.jpg"));
 		minimap = new MiniMap(s,gsm,this);
-
+		showGrid = false;
+		if(gridColor == null)
+			gridColor = new Color(165,140,62,96);
+		if(highlight == null)
+			highlight = new Color(148,196,111,128);
+		Random rn = new Random();
+		highlightedSquare = new Pos(rn.nextInt(squares.length), rn.nextInt(squares[0].length));
 	}
 	public GameMap(int width, int height, Screen s, GameStateManager gsm) throws IOException {
 		super(s,gsm);
@@ -53,6 +64,9 @@ public class GameMap extends GameState{
 		MAX_WIDTH = squares.length * SQUARE_SIZE;
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
 		tiles = ImageIO.read(getClass().getResourceAsStream("/res/img/tiles.jpg"));
+		showGrid = false;
+		if(gridColor == null)
+			gridColor = new Color(165,140,62,96);
 	}
 	@Override
 	public void draw(Graphics g) {
@@ -74,6 +88,29 @@ public class GameMap extends GameState{
 				}
 			}
 		}
+		// Draw highlight on square
+		if(highlightedSquare != null){
+			p = getPosOfSquare((int) highlightedSquare.getX(),(int) highlightedSquare.getY());
+			isIn = GameStateManager.s.isSquareIn(p); 
+			if(	 isIn != 0){
+				if(isIn == 1)
+					p.minus(GameStateManager.s);
+				else
+					if(GameStateManager.s.getX() < 0)
+						p.addX(-MAX_WIDTH).minus(GameStateManager.s);
+					else
+						p.addX(MAX_WIDTH).minus(GameStateManager.s);
+				g.setColor(gridColor);
+				for(int i = 0; i < 3; i ++){
+					g.drawLine((int) p.getX() + getSquareSize()	- 1 + i, (int) p.getY()	- 1 + i						, (int) p.getX() + getSquareSize() - 1 + i 	, (int) p.getY() + getSquareSize() - 1 + i);
+					g.drawLine((int) p.getX()					- 1 + i, (int) p.getY()	- 1 + i						, (int) p.getX() - 1 + i					, (int) p.getY() + getSquareSize() - 1 + i);
+					g.drawLine((int) p.getX()					- 1 + i, (int) p.getY()	- 1 + i						, (int) p.getX() + getSquareSize() - 1 + i	, (int) p.getY() - 1 + i);
+					g.drawLine((int) p.getX()					- 1 + 1, (int) p.getY() + getSquareSize() - 1 + i	, (int) p.getX() + getSquareSize() - 1 + i	, (int) p.getY() + getSquareSize() - 1 + i);
+				}
+				
+			}
+		}
+		
 		minimap.draw(g);
 	}
 	public StringBuilder save(StringBuilder s) {
@@ -135,6 +172,9 @@ public class GameMap extends GameState{
 		case KeyEvent.VK_ESCAPE:
 			StatFunc.save(this,"test");
 			stop();
+			break;
+		case KeyEvent.VK_G:
+			showGrid = !showGrid;
 			break;
 		}
 	}
@@ -223,10 +263,6 @@ public class GameMap extends GameState{
 		if(getSquareSize() < 100) {
 			g.setColor(squares[x][y].getColor());
 			g.fillRect((int) p.getX(), (int) p.getY(), (int) getSquareSize(), (int) getSquareSize());
-			if(squares[x][y].hasUnit()){
-				// TODO
-				//g.drawImage(Fighter.spites, (int) p.getX(), (int) p.getY(), (int) (Fighter.spites.getWidth() * getSquareSize() / 500.0), (int) (Fighter.spites.getHeight() *  getSquareSize() / 500.0),null);
-			}
 		} else {
 			Pos temp = StatFunc.typeToMapPart(squares[x][y]);
 			g.drawImage(tiles, 
@@ -235,10 +271,13 @@ public class GameMap extends GameState{
 					(int) temp.getX()					, (int) temp.getY()					,
 					(int) temp.getX() + 500				, (int) temp.getY() + 500		
 					,null);
-			if(squares[x][y].hasUnit()) {
-				// TODO
-				//g.drawImage(Fighter.spites, (int) p.getX(), (int) p.getY(), (int) (Fighter.spites.getWidth() * getSquareSize() / 500.0), (int) (Fighter.spites.getHeight() *  getSquareSize() / 500.0),null);
-			}
+		}
+		if(showGrid){
+			g.setColor(gridColor);
+			g.drawLine((int) p.getX() + getSquareSize()	, (int) p.getY()					, (int) p.getX() + getSquareSize()	, (int) p.getY() + getSquareSize());
+			g.drawLine((int) p.getX()					, (int) p.getY()					, (int) p.getX()					, (int) p.getY() + getSquareSize());
+			g.drawLine((int) p.getX()					, (int) p.getY()					, (int) p.getX() + getSquareSize()	, (int) p.getY());
+			g.drawLine((int) p.getX()					, (int) p.getY() + getSquareSize()	, (int) p.getX() + getSquareSize()	, (int) p.getY() + getSquareSize());
 		}
 	}
 	private static Square[][] generateMap(int size){
