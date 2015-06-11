@@ -16,21 +16,18 @@ public class MiniMap extends GameState{
 	private BufferedImage map;
 	private Pos position, size;
 	private int borderthickness;
-	//private GameMap m;
-	//Follow screen
+	// Follow screen
 	private boolean followScreen;
+	// Color of the square indicating where the screen is
+	private Color screenBorder;
 	public MiniMap(Screen s,GameStateManager gsm, GameMap m){
 		super(s,gsm);
 		map = StatFunc.getMiniMap(m);
-		//this.m = m;
 		borderthickness = (int) Screen.WIDTH / 160;
 		size = new Pos(Screen.WIDTH / 10,(((double) (map.getHeight()) / map.getWidth()) * (Screen.WIDTH / 10)));
 		position = new Pos(Screen.WIDTH / 80, Screen.HEIGHT - size.getY() - 2 * borderthickness - (Screen.WIDTH / 80));
+		screenBorder = new Color(0,0,0,192);
 	}
-	
-	/*public GameMap getMap(){
-		return m;
-	}*/
 	public Pos getPos(){
 		return position;
 	}
@@ -48,7 +45,6 @@ public class MiniMap extends GameState{
 		if(position.getX() != Screen.WIDTH / 80 || position.getY() != Screen.HEIGHT - size.getY() - 2 * borderthickness - Screen.WIDTH / 80)
 			position.setPos(Screen.WIDTH / 80, Screen.HEIGHT - size.getY() - 2 * borderthickness - Screen.WIDTH / 80);
 		if(followScreen){
-			// TODO NÅGOT FUNGERAR INTe
 			Pos temp = new Pos(MouseInfo.getPointerInfo().getLocation());
 			if(isInMiniMapBorders(temp)){
 				Pos move_screen = new Pos(	(double) (temp.getX() - position.getX() - borderthickness) / size.getX(), 
@@ -67,8 +63,8 @@ public class MiniMap extends GameState{
 		g.fillRect((int) position.getX(), (int) position.getY(), (int) size.getX() + 2 * borderthickness, (int) size.getY() + 2 * borderthickness);
 		//Image
 		g.drawImage(map, (int) position.getX() + borderthickness, (int) position.getY() + borderthickness,(int) size.getX(),(int) size.getY(), null);
-		//Square
-		g.setColor(Color.YELLOW);
+		// Screen border indicating where the sceen is on the map
+		g.setColor(screenBorder);
 		Pos [] s_corners = getTranslatedCorners();
 		if(s_corners[0].getX() < position.getX() + borderthickness){
 			//Right line is normal
@@ -115,20 +111,15 @@ public class MiniMap extends GameState{
 		
 	}
 	@Override
-	public void endTurn() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void endTurn() {}
 
 	@Override
 	public StringBuilder save(StringBuilder s) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void sendMousePress(int k, int x, int y) {
-		// TODO Auto-generated method stub
 		if(k == 1) { //&& move_screen == null ){
 			followScreen = true;
 		}
@@ -136,7 +127,6 @@ public class MiniMap extends GameState{
 
 	@Override
 	public void sendMouseRelease(int k, int x, int y) {
-		// TODO Auto-generated method stub
 		if(k == 1) {
 			followScreen = false;
 		}
@@ -168,11 +158,11 @@ public class MiniMap extends GameState{
 		
 	}
 
-	private Pos translatePos(Pos p){
+	private Pos translatePos(Pos p) {
 		return new Pos(translateX(p.getX()),translateY(p.getY()));
 	}
 
-	private double translateY(double y){
+	private double translateY(double y) {
 		return (y / GameMap.MAX_HEIGHT) * size.getY();
 	}
 
@@ -181,7 +171,7 @@ public class MiniMap extends GameState{
 	 * @param x
 	 * @return
 	 */
-	private double translateX(double x){
+	private double translateX(double x) {
 		return (x / GameMap.MAX_WIDTH) * size.getX();
 	}
 	/**

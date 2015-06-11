@@ -74,5 +74,19 @@ public class GameStateManager implements KeyListener, MouseWheelListener, MouseL
 	public Pos getFramePos() {
 		return new Pos(r.frame.getLocationOnScreen());
 	}
+	public void menu() {
+		gs = new Menu(s,this);
+	}
+	public void map() {
+		try {
+			gs = new GameMap(s,this);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	/*public void board(){
+		gs = new Board();
+	}*/
 
 }

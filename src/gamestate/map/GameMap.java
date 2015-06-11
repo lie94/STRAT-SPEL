@@ -38,6 +38,9 @@ public class GameMap extends GameState{
 	//Highligt square
 	private Pos highlightedSquare;
 	private static Color highlight;
+	//Select square to be highlighted
+	private Pos testSquare;
+	private Pos startPos;
 	public GameMap(Screen s, GameStateManager gsm) throws IOException {
 		super(s,gsm);
 		this.s = s;
@@ -52,8 +55,9 @@ public class GameMap extends GameState{
 			gridColor = new Color(165,140,62,96);
 		if(highlight == null)
 			highlight = new Color(148,196,111,128);
-		Random rn = new Random();
-		highlightedSquare = new Pos(rn.nextInt(squares.length), rn.nextInt(squares[0].length));
+		highlightedSquare = null;
+		/*Random rn = new Random();
+		highlightedSquare = new Pos(rn.nextInt(squares.length), rn.nextInt(squares[0].length));*/
 	}
 	public GameMap(int width, int height, Screen s, GameStateManager gsm) throws IOException {
 		super(s,gsm);
@@ -67,6 +71,7 @@ public class GameMap extends GameState{
 		showGrid = false;
 		if(gridColor == null)
 			gridColor = new Color(165,140,62,96);
+		highlightedSquare = null;
 	}
 	@Override
 	public void draw(Graphics g) {
@@ -102,10 +107,19 @@ public class GameMap extends GameState{
 						p.addX(MAX_WIDTH).minus(GameStateManager.s);
 				g.setColor(gridColor);
 				for(int i = 0; i < 3; i ++){
-					g.drawLine((int) p.getX() + getSquareSize()	- 1 + i, (int) p.getY()	- 1 + i						, (int) p.getX() + getSquareSize() - 1 + i 	, (int) p.getY() + getSquareSize() - 1 + i);
-					g.drawLine((int) p.getX()					- 1 + i, (int) p.getY()	- 1 + i						, (int) p.getX() - 1 + i					, (int) p.getY() + getSquareSize() - 1 + i);
-					g.drawLine((int) p.getX()					- 1 + i, (int) p.getY()	- 1 + i						, (int) p.getX() + getSquareSize() - 1 + i	, (int) p.getY() - 1 + i);
-					g.drawLine((int) p.getX()					- 1 + 1, (int) p.getY() + getSquareSize() - 1 + i	, (int) p.getX() + getSquareSize() - 1 + i	, (int) p.getY() + getSquareSize() - 1 + i);
+					g.drawLine(	(int) p.getX()						- 1 + i		, (int) p.getY()	- 1 + i						, 
+								(int) p.getX() + getSquareSize() 	+ 1 - i		, (int) p.getY() 	- 1 + i);
+					
+					g.drawLine(	(int) p.getX() + getSquareSize()	+ 1 - i		, (int) p.getY()					+ i	, 
+								(int) p.getX() + getSquareSize() 	+ 1 - i 	, (int) p.getY() + getSquareSize() 	- i);
+					
+					g.drawLine(	(int) p.getX()						- 1 + i		, (int) p.getY()	 				+ i	,
+								(int) p.getX() 						- 1 + i		, (int) p.getY() + getSquareSize() 	- i);
+					
+					
+					
+					g.drawLine(	(int) p.getX()						- 1 + 1		, (int) p.getY() + getSquareSize() + 1 - i		, 
+								(int) p.getX() + getSquareSize() 	+ 1 - i		, (int) p.getY() + getSquareSize() + 1 - i);
 				}
 				
 			}
@@ -205,6 +219,8 @@ public class GameMap extends GameState{
 			return;
 		}
 		if(k == 1){
+			testSquare = mousePosToSquarePos(x,y);
+			startPos = s.clone();
 			shiftScreen = new Pos(x,y);
 		}
 	}
@@ -217,18 +233,37 @@ public class GameMap extends GameState{
 				minimap.sendMouseRelease(k,x,y);
 			return;
 		}
-		if(k == 1)
+		if(k == 1){
 			setSSNull = true;
+			if(testSquare.equals(mousePosToSquarePos(x,y)) && startPos.sub(s).length() < 2)
+				highlightedSquare = testSquare.clone();
+		}
+			
 	}
 	@Override
 	public void sendMouseWheel(int k, int x, int y) {
 		mouseWheelRot = k;
 	}
+	public Square[][] getSquares() {
+		return squares;
+	}
 	public static int getSquareSize() {
 		return SQUARE_SIZE;
 	}
-	public Square[][] getSquares() {
-		return squares;
+	public Pos mousePosToSquarePos(Pos p){
+		return mousePosToSquarePos((int) p.getX(), (int) p.getY());
+	}
+	public Pos mousePosToSquarePos(int x, int y){
+		Pos temp = s.clone();
+		temp.add(x, y);
+		if(x > MAX_WIDTH){
+			x -= MAX_WIDTH;
+		}
+		if(x < 0){
+			x += MAX_WIDTH;
+		}
+		temp.setPos((temp.getX() / MAX_WIDTH) * squares.length , (temp.getY() / MAX_HEIGHT) * squares[0].length);
+		return temp;
 	}
 	private void changeSquareSize(int i) {
 		if(mouseWheelRot != 0){

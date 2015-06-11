@@ -95,4 +95,14 @@ public class Pos implements Cloneable{
 	public Pos clone(){
 		return new Pos(x,y);
 	}
+	public boolean equals(Pos p){
+		if(x == p.getX() && y == p.getY())
+			return true;
+		return false;
+	}
+	public static boolean equals(Pos p1, Pos p2){
+		if(p1.getX() == p2.getX() && p1.getY() == p2.getY())
+			return true;
+		return false;
+	}
 }

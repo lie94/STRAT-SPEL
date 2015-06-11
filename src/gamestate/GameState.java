@@ -15,6 +15,15 @@ public abstract class GameState{
 	protected void stop(){
 		gsm.stop();
 	}
+	protected void menu(){
+		gsm.menu();
+	}
+	protected void map(){
+		gsm.map();
+	}
+	/*protected void board(){
+		gsm.board();
+	}*/
 	protected Pos getScreenPos(){
 		return gsm.getFramePos();
 	}
