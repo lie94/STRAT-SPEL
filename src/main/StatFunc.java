@@ -56,7 +56,7 @@ public class StatFunc {
 	public static Square[][] setAllElements(Square element, Square[][] matrix){
 		for(int i = 0; i < matrix.length; i++){
 			for(int j = 0; j < matrix[0].length; j++){
-				matrix[i][j] = element;
+				matrix[i][j] = element.clone();
 			}
 		}
 		return matrix;

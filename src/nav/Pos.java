@@ -90,7 +90,7 @@ public class Pos implements Cloneable{
 		return this;
 	}
 	public String toString(){
-		return "(" + x + ", " + y + ")";
+		return "(" + (int) x + ", " + (int) y + ")";
 	}
 	public Pos clone(){
 		return new Pos(x,y);
@@ -104,5 +104,11 @@ public class Pos implements Cloneable{
 		if(p1.getX() == p2.getX() && p1.getY() == p2.getY())
 			return true;
 		return false;
+	}
+	public double lenghtTo(Pos p){
+		return lengthTo(p.getX(),p.getY());
+	}
+	public double lengthTo(double x, double y){
+		return Math.sqrt(Math.pow(this.x -x, 2) + Math.pow(this.y - y, 2));
 	}
 }

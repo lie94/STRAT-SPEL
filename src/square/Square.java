@@ -2,7 +2,7 @@ package square;
 
 import java.awt.Color;
 
-import units.Team;
+import units.Unit;
 
 /**
  * There are 6 different types of squares
@@ -17,21 +17,34 @@ import units.Team;
  * @author Felix
  *
  */
-public class Square implements Cloneable{
+public class Square{
 	private int type;
 	private int imp = 0;
-	private Team units;
+	private Unit unit;
 	public Square(final int type){
 		if(type < 0 || type > 5){
 			throw new IllegalArgumentException("A square can only be of type 0-5. type = " + type);
 		}
 		this.type = type;
 	}
-	public Team getTeam(){
-		return units;
+	public boolean isLand(){
+		if(type != 0 && type != 1)
+			return true;
+		return false;
 	}
-	public void setUnits(Team pc){
-		units = pc;
+	public Square clone(){
+		return new Square(type);
+	}
+	public void setUnit(Unit u){
+		unit = u;
+	}
+	public Unit getUnit(){
+		return unit;
+	}
+	public boolean hasUnit(){
+		if(unit != null)
+			return true;
+		return false;
 	}
 	public int getType(){
 		return type;
@@ -65,11 +78,5 @@ public class Square implements Cloneable{
 			return new Color(128,128,128);
 		}
 		return null;
-	}
-	public boolean hasUnit() {
-		if(units != null){
-			return true;
-		}
-		return false;
 	}
 }

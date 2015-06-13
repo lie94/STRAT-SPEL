@@ -1,73 +1,80 @@
 package gamestate.map;
 
-import gamestate.GameState;
-import gamestate.GameStateManager;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.MouseInfo;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
-
-import javax.imageio.ImageIO;
 
 import main.StatFunc;
 import nav.Pos;
 import nav.Screen;
 import square.Square;
+import units.Settler;
+import gamestate.GameState;
+import gamestate.GameStateManager;
 
 public class GameMap extends GameState{
 	private Square[][] squares;
 	public static int MAX_WIDTH, MAX_HEIGHT;
-	public static final int STD_SQUARE_MAX_SIZE = 40;
+	public static final int STD_SQUARE_SIZE = 60;
 	private static int SQUARE_SIZE;
-	private BufferedImage tiles;
 	private boolean[] moveScreen = new boolean[4];
 	private MiniMap minimap;
-	//Grid
+	// Grid
 	private boolean showGrid;
 	private static Color gridColor;
 	
-	//Shift screen when pressing left click
+	// Shift screen when pressing left click
 	private Pos shiftScreen;
 	private boolean setSSNull;
-	//Zoom with mouse wheel
+	// Zoom with mouse wheel
 	private int mouseWheelRot = 0;
-	//Highligt square
+	// Highligt square
 	private Pos highlightedSquare;
 	private static Color highlight;
-	//Select square to be highlighted
+	// Select square to be highlighted
 	private Pos testSquare;
 	private Pos startPos;
+	// Decides if info should be shown
+	private boolean showInfo;
+	
 	public GameMap(Screen s, GameStateManager gsm) throws IOException {
 		super(s,gsm);
 		this.s = s;
-		SQUARE_SIZE = STD_SQUARE_MAX_SIZE; 
+		SQUARE_SIZE = STD_SQUARE_SIZE; 
 		squares = generateMap(1);
 		MAX_WIDTH = squares.length * SQUARE_SIZE;
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
-		tiles = ImageIO.read(getClass().getResourceAsStream("/res/img/tiles.jpg"));
 		minimap = new MiniMap(s,gsm,this);
 		showGrid = false;
 		if(gridColor == null)
-			gridColor = new Color(165,140,62,96);
+			gridColor = new Color(165,140,62,128);
 		if(highlight == null)
-			highlight = new Color(148,196,111,128);
+			highlight = new Color(0,0,0,128);
 		highlightedSquare = null;
-		/*Random rn = new Random();
-		highlightedSquare = new Pos(rn.nextInt(squares.length), rn.nextInt(squares[0].length));*/
+		showInfo = false;
+		Random rn = new Random();
+		int max = 10;
+		for(int i = 0; i < max; i++){
+			Square sq = squares[rn.nextInt(squares.length)][rn.nextInt(squares[0].length)];
+			if(!sq.hasUnit() && sq.isLand())
+				 new Settler(sq);
+			else
+				max++;
+		}
+			
+			
 	}
 	public GameMap(int width, int height, Screen s, GameStateManager gsm) throws IOException {
 		super(s,gsm);
 		squares = new Square[width][height];
 		this.s = s;
-		SQUARE_SIZE = STD_SQUARE_MAX_SIZE; 
+		SQUARE_SIZE = STD_SQUARE_SIZE; 
 		squares = generateMap(1);
 		MAX_WIDTH = squares.length * SQUARE_SIZE;
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
-		tiles = ImageIO.read(getClass().getResourceAsStream("/res/img/tiles.jpg"));
 		showGrid = false;
 		if(gridColor == null)
 			gridColor = new Color(165,140,62,96);
@@ -75,7 +82,7 @@ public class GameMap extends GameState{
 	}
 	@Override
 	public void draw(Graphics g) {
-		Pos p;
+		Pos p = null;
 		int isIn;
 		for(int i = 0; i < squares.length; i++){
 			for(int j = 0; j < squares[0].length; j++){
@@ -105,7 +112,7 @@ public class GameMap extends GameState{
 						p.addX(-MAX_WIDTH).minus(GameStateManager.s);
 					else
 						p.addX(MAX_WIDTH).minus(GameStateManager.s);
-				g.setColor(gridColor);
+				g.setColor(highlight);
 				for(int i = 0; i < 3; i ++){
 					g.drawLine(	(int) p.getX()						- 1 + i		, (int) p.getY()	- 1 + i						, 
 								(int) p.getX() + getSquareSize() 	+ 1 - i		, (int) p.getY() 	- 1 + i);
@@ -126,6 +133,8 @@ public class GameMap extends GameState{
 		}
 		
 		minimap.draw(g);
+		if(showInfo)
+			drawInfo(g);
 	}
 	public StringBuilder save(StringBuilder s) {
 		String new_line = System.getProperty("line.separator");
@@ -190,6 +199,8 @@ public class GameMap extends GameState{
 		case KeyEvent.VK_G:
 			showGrid = !showGrid;
 			break;
+		case 0:
+			showInfo = !showInfo;
 		}
 	}
 	@Override
@@ -231,7 +242,6 @@ public class GameMap extends GameState{
 			y = y - (int) minimap.getPos().getY() - minimap.getThickness();
 			if(x > 0 && y > 0 && x <= minimap.getSize().getX() && y <= minimap.getSize().getY())
 				minimap.sendMouseRelease(k,x,y);
-			return;
 		}
 		if(k == 1){
 			setSSNull = true;
@@ -247,9 +257,6 @@ public class GameMap extends GameState{
 	public Square[][] getSquares() {
 		return squares;
 	}
-	public static int getSquareSize() {
-		return SQUARE_SIZE;
-	}
 	public Pos mousePosToSquarePos(Pos p){
 		return mousePosToSquarePos((int) p.getX(), (int) p.getY());
 	}
@@ -262,8 +269,42 @@ public class GameMap extends GameState{
 		if(x < 0){
 			x += MAX_WIDTH;
 		}
-		temp.setPos((temp.getX() / MAX_WIDTH) * squares.length , (temp.getY() / MAX_HEIGHT) * squares[0].length);
-		return temp;
+		return mapPosToSquarePos(temp);
+	}
+	public Pos mapPosToSquarePos(Pos p){
+		return new Pos((p.getX() / MAX_WIDTH) * squares.length , (p.getY() / MAX_HEIGHT) * squares[0].length);
+	}
+	public static int getSquareSize() {
+		return SQUARE_SIZE;
+	}
+	private void drawInfo(Graphics g) {
+		if(highlightedSquare != null){
+			Square sq = squares[StatFunc.mod((int) highlightedSquare.getX(), squares.length)][(int) highlightedSquare.getY()];
+			g.setColor(Color.YELLOW);
+			String hlS = "(" + StatFunc.mod((int) highlightedSquare.getX(), squares.length) + ", " + (int) highlightedSquare.getY() + ")";
+			int a = g.getFontMetrics().stringWidth(hlS);
+			if(sq.hasUnit()){
+				int b = g.getFontMetrics().stringWidth(sq.getUnit().getName());
+				g.fillRect(0, 0, a > b ? a : b, 40);
+			}else{
+				int b = g.getFontMetrics().stringWidth("" + sq.getType());
+				g.fillRect(0, 0, a > b ? a : b, 30);
+			}
+			g.setColor(Color.BLACK);
+			g.drawString(hlS					, 0	, 10);
+			g.drawString("" + sq.getType()		, 0	, 20);
+			g.drawString("" + getSquareSize()	, 0	, 30);
+			if(sq.hasUnit()){
+				g.drawString(sq.getUnit().getName(), 0, 40);
+			}
+		} else{
+			g.setColor(Color.YELLOW);
+			g.fillRect(0, 0, g.getFontMetrics().stringWidth("No highlighted square"), 20);;
+			g.setColor(Color.BLACK);
+			g.drawString("No highlighted square", 0	, 10);
+			g.drawString("" + getSquareSize()	, 0	, 20);
+		}
+		
 	}
 	private void changeSquareSize(int i) {
 		if(mouseWheelRot != 0){
@@ -278,16 +319,16 @@ public class GameMap extends GameState{
 		mouseWheelRot = 0;
 	}
 	private void setSquareSize(double d) {
-		if((int) d * squares[0].length * 0.9 < Screen.HEIGHT || (int) d * squares.length * 0.9 < Screen.WIDTH)
-			return;
-		if(d > 300)
-			return;
+		if(d < 40)
+			d = 40;
+		if(d > 150)
+			d = 150;
 		Pos oldMiddle = s.getRelativeMiddle();
 		GameMap.SQUARE_SIZE = (int) d;
 		updateScreenDependency();
 		s.setPos(new Pos(oldMiddle.getX() * MAX_WIDTH - Screen.WIDTH / 2, oldMiddle.getY() * MAX_HEIGHT - Screen.HEIGHT / 2));
 	}
-	private Pos getPosOfSquare(int i, int j) {
+	private Pos getPosOfSquare(final int i, final int j) {
 		return new Pos(SQUARE_SIZE * i, SQUARE_SIZE * j);
 	}
 	private void updateScreenDependency() {
@@ -295,10 +336,10 @@ public class GameMap extends GameState{
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
 	}
 	private void drawSquare(Graphics g, final Pos p, final int x, final int y) {
-		if(getSquareSize() < 100) {
+		//if(getSquareSize() < 100) {
 			g.setColor(squares[x][y].getColor());
 			g.fillRect((int) p.getX(), (int) p.getY(), (int) getSquareSize(), (int) getSquareSize());
-		} else {
+		/*} else {
 			Pos temp = StatFunc.typeToMapPart(squares[x][y]);
 			g.drawImage(tiles, 
 					(int) p.getX()						, (int) p.getY()					,
@@ -306,19 +347,23 @@ public class GameMap extends GameState{
 					(int) temp.getX()					, (int) temp.getY()					,
 					(int) temp.getX() + 500				, (int) temp.getY() + 500		
 					,null);
+		}*/
+		if(squares[x][y].hasUnit()){
+			squares[x][y].getUnit().draw(g, s, (int) p.getX(), (int) p.getY()); 
 		}
 		if(showGrid){
 			g.setColor(gridColor);
-			g.drawLine((int) p.getX() + getSquareSize()	, (int) p.getY()					, (int) p.getX() + getSquareSize()	, (int) p.getY() + getSquareSize());
+			//g.drawLine((int) p.getX() + getSquareSize()	, (int) p.getY()					, (int) p.getX() + getSquareSize()	, (int) p.getY() + getSquareSize());
 			g.drawLine((int) p.getX()					, (int) p.getY()					, (int) p.getX()					, (int) p.getY() + getSquareSize());
 			g.drawLine((int) p.getX()					, (int) p.getY()					, (int) p.getX() + getSquareSize()	, (int) p.getY());
-			g.drawLine((int) p.getX()					, (int) p.getY() + getSquareSize()	, (int) p.getX() + getSquareSize()	, (int) p.getY() + getSquareSize());
+			//g.drawLine((int) p.getX()					, (int) p.getY() + getSquareSize()	, (int) p.getX() + getSquareSize()	, (int) p.getY() + getSquareSize());
 		}
+		
 	}
 	private static Square[][] generateMap(int size){
 		Random rn = new Random();
 		Square[][] temp = new Square[160][100];
-		temp = StatFunc.setAllElements(new Square(0),temp);
+		temp = (Square[][]) StatFunc.setAllElements(new Square(0),temp);
 		int radius = temp[1].length / 5;
 		int points = 25 + rn.nextInt(11);
 		for(int i = 0; i < points; i++){
