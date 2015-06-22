@@ -4,19 +4,16 @@ import gamestate.GameState;
 import gamestate.GameStateManager;
 import gamestate.map.GameMap;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-import nav.Pos;
 import nav.Screen;
 import square.Square;
 
-public class StatFunc {
+public abstract class StatFunc {
 	public static int sum(int[] intArray){
 		int sum = 0;
 		for(int i : intArray){
@@ -74,65 +71,6 @@ public class StatFunc {
 			sum += d;
 		}
 		return sum / numbers.length;
-	}
-	public static Pos typeToMapPart(int type){
-		switch(type){
-		case 0:
-			return new Pos(0,0);
-		case 1:
-			return new Pos(505,0);
-		case 2:
-			return new Pos(1010,0);
-		case 3:
-			return new Pos(0,505);
-		case 4:
-			return new Pos(505,505);
-		case 5:
-			return new Pos(1010,505);
-		default:
-			return null;
-		}
-	}
-	public static Pos typeToMapPart(Square s){
-		return typeToMapPart(s.getType());
-	}
-	private static Color avrageColor(Square[][] squares, int x, int y, int width, int height){
-		int [] arr = new int[6];
-		if(squares.length == width){
-			return squares[x][y].getColor();
-		}else{
-			System.out.println(squares.length > width);
-			System.out.println(((x + 1 ) * squares.length) / width);
-			for(int i = (int) ((x * squares.length) / width) ; i < (int) (((x + 1) * squares.length) / width); i++){
-				for(int j = (int) ((y * squares[0].length) / height) ; j < (int) (((y + 1) * squares[0].length)/ height) ; j++){
-					System.out.println("SWAG");
-					arr[squares[x][y].getType()]++;
-				}
-			}
-			int largest = 0;
-			int index = -1;
-			for(int i = 0; i < arr.length; i++){
-				if(arr[i] > largest){
-					index = i;
-					largest = arr[i];
-				}
-			}
-			return Square.getColor(index);
-		}
-	}
-	public static BufferedImage getMiniMap(GameMap map) {
-		Square[][] squares = map.getSquares();
-		BufferedImage temp; 
-		if((int) Screen.WIDTH / 5 < squares.length)
-			temp = new BufferedImage((int) Screen.WIDTH / 5, (int) (Screen.WIDTH / 5) * squares[0].length / squares.length, BufferedImage.TYPE_INT_RGB);
-		else
-			temp = new BufferedImage(squares.length, squares[0].length, BufferedImage.TYPE_INT_RGB);
-		for(int x = 0; x < temp.getWidth(); x++){
-			for(int y = 0; y < temp.getHeight(); y++){
-				temp.setRGB(x, y, avrageColor(squares,x,y,temp.getWidth(),temp.getWidth()).getRGB());
-			}
-		}
-		return temp;
 	}
 	public static String arrToString(int arr[]){
 		StringBuilder s = new StringBuilder();

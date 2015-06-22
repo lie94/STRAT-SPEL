@@ -1,28 +1,25 @@
 package gamestate.map;
 
-import gamestate.GameState;
-import gamestate.GameStateManager;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.MouseInfo;
 import java.awt.image.BufferedImage;
 
-import main.StatFunc;
+import square.Square;
+import main.ClickSquare;
 import nav.Pos;
 import nav.Screen;
 
-public class MiniMap extends GameState{
+public class MiniMap extends ClickSquare{
 	private BufferedImage map;
-	private Pos position, size;
 	private int borderthickness;
 	// Follow screen
 	private boolean followScreen;
 	// Color of the square indicating where the screen is
 	private Color screenBorder;
-	public MiniMap(Screen s,GameStateManager gsm, GameMap m){
-		super(s,gsm);
-		map = StatFunc.getMiniMap(m);
+	public MiniMap(Screen s, GameMap m){
+		super(s);
+		map = getMiniMap(m);
 		borderthickness = (int) Screen.WIDTH / 160;
 		size = new Pos(Screen.WIDTH / 10,(((double) (map.getHeight()) / map.getWidth()) * (Screen.WIDTH / 10)));
 		position = new Pos(Screen.WIDTH / 80, Screen.HEIGHT - size.getY() - 2 * borderthickness - (Screen.WIDTH / 80));
@@ -111,14 +108,6 @@ public class MiniMap extends GameState{
 		
 	}
 	@Override
-	public void endTurn() {}
-
-	@Override
-	public StringBuilder save(StringBuilder s) {
-		return null;
-	}
-
-	@Override
 	public void sendMousePress(int k, int x, int y) {
 		if(k == 1) { //&& move_screen == null ){
 			followScreen = true;
@@ -139,8 +128,6 @@ public class MiniMap extends GameState{
 	@Override
 	public void sendKeyboardRelease(int k) {}
 
-	@Override
-	public void sendMouseWheel(int k, int x, int y) {}
 	public boolean isInMiniMap(Pos p){
 		return isInMiniMap((int) p.getX(),(int) p.getY());
 	}
@@ -191,5 +178,43 @@ public class MiniMap extends GameState{
 		corners[2] = translatePos(temp.addY(Screen.HEIGHT)).add(position.getX() + borderthickness, position.getY() + borderthickness);
 		corners[3] = translatePos(temp.addX(-Screen.WIDTH)).add(position.getX() + borderthickness, position.getY() + borderthickness);
 		return corners;
+	}
+	private static Color avrageColor(Square[][] squares, int x, int y, int width, int height){
+		int [] arr = new int[6];
+		if(squares.length == width){
+			return squares[x][y].getColor();
+		}else{
+			System.out.println(squares.length > width);
+			System.out.println(((x + 1 ) * squares.length) / width);
+			for(int i = (int) ((x * squares.length) / width) ; i < (int) (((x + 1) * squares.length) / width); i++){
+				for(int j = (int) ((y * squares[0].length) / height) ; j < (int) (((y + 1) * squares[0].length)/ height) ; j++){
+					System.out.println("SWAG");
+					arr[squares[x][y].getType()]++;
+				}
+			}
+			int largest = 0;
+			int index = -1;
+			for(int i = 0; i < arr.length; i++){
+				if(arr[i] > largest){
+					index = i;
+					largest = arr[i];
+				}
+			}
+			return Square.getColor(index);
+		}
+	}
+	private static BufferedImage getMiniMap(GameMap map) {
+		Square[][] squares = map.getSquares();
+		BufferedImage temp; 
+		if((int) Screen.WIDTH / 5 < squares.length)
+			temp = new BufferedImage((int) Screen.WIDTH / 5, (int) (Screen.WIDTH / 5) * squares[0].length / squares.length, BufferedImage.TYPE_INT_RGB);
+		else
+			temp = new BufferedImage(squares.length, squares[0].length, BufferedImage.TYPE_INT_RGB);
+		for(int x = 0; x < temp.getWidth(); x++){
+			for(int y = 0; y < temp.getHeight(); y++){
+				temp.setRGB(x, y, avrageColor(squares,x,y,temp.getWidth(),temp.getWidth()).getRGB());
+			}
+		}
+		return temp;
 	}
 }

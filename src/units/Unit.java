@@ -28,6 +28,15 @@ public abstract class Unit{
 	public boolean canFight(){
 		return canFight;
 	}
+	public boolean move(Square s){
+		if(s.hasUnit()){
+			return false;
+		}
+		square.setUnit(null);
+		s.setUnit(this);
+		square = s;
+		return true;
+	}
 	public abstract String getName();
 	public boolean setSquare(Square s){
 		if(!s.hasUnit()){

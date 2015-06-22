@@ -47,7 +47,7 @@ public class GameMap extends GameState{
 		squares = generateMap(1);
 		MAX_WIDTH = squares.length * SQUARE_SIZE;
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
-		minimap = new MiniMap(s,gsm,this);
+		minimap = new MiniMap(s,this);
 		showGrid = false;
 		if(gridColor == null)
 			gridColor = new Color(165,140,62,128);
@@ -79,6 +79,28 @@ public class GameMap extends GameState{
 		if(gridColor == null)
 			gridColor = new Color(165,140,62,96);
 		highlightedSquare = null;
+	}
+	@Override
+	public void update() {
+		minimap.update();
+		for(int i = 0; i < 4; i++) {
+			if(moveScreen[i]){
+				s.move(i,26);
+			}
+		}
+		if(shiftScreen != null) {
+			Pos temp = new Pos(MouseInfo.getPointerInfo().getLocation());
+			Pos ScreenPos = getScreenPos();
+			temp.add(ScreenPos.changeSign());
+			s.add(shiftScreen.sub(temp));
+			shiftScreen = temp.clone();
+			s.correctPos();
+		}
+		if(setSSNull) {
+			shiftScreen = null;
+			setSSNull = false;
+		}
+		changeSquareSize(mouseWheelRot);
 	}
 	@Override
 	public void draw(Graphics g) {
@@ -150,28 +172,6 @@ public class GameMap extends GameState{
 			}
 		}
 		return s;
-	}
-	@Override
-	public void update() {
-		minimap.update();
-		for(int i = 0; i < 4; i++) {
-			if(moveScreen[i]){
-				s.move(i,26);
-			}
-		}
-		if(shiftScreen != null) {
-			Pos temp = new Pos(MouseInfo.getPointerInfo().getLocation());
-			Pos ScreenPos = getScreenPos();
-			temp.add(ScreenPos.changeSign());
-			s.add(shiftScreen.sub(temp));
-			shiftScreen = temp.clone();
-			s.correctPos();
-		}
-		if(setSSNull) {
-			shiftScreen = null;
-			setSSNull = false;
-		}
-		changeSquareSize(mouseWheelRot);
 	}
 	@Override
 	public void endTurn() {
@@ -247,6 +247,10 @@ public class GameMap extends GameState{
 			setSSNull = true;
 			if(testSquare.equals(mousePosToSquarePos(x,y)) && startPos.sub(s).length() < 2)
 				highlightedSquare = testSquare.clone();
+		}else if(k == 3 && squares[highlightedSquare.getiX()][highlightedSquare.getiY()].hasUnit()){
+			if(squares[highlightedSquare.getiX()][highlightedSquare.getiY()]
+					.getUnit().move(mousePosToSquare(x,y)))
+				highlightedSquare = mousePosToSquarePos(x,y);
 		}
 			
 	}
@@ -257,21 +261,26 @@ public class GameMap extends GameState{
 	public Square[][] getSquares() {
 		return squares;
 	}
+	public Square mousePosToSquare(int x, int y){
+		Pos p = mousePosToSquarePos(x,y);
+		return squares[p.getiX()][p.getiY()];
+	}
 	public Pos mousePosToSquarePos(Pos p){
 		return mousePosToSquarePos((int) p.getX(), (int) p.getY());
 	}
 	public Pos mousePosToSquarePos(int x, int y){
 		Pos temp = s.clone();
 		temp.add(x, y);
-		if(x > MAX_WIDTH){
-			x -= MAX_WIDTH;
+		if(temp.getiX() >= MAX_WIDTH){
+			temp.add(-MAX_WIDTH, 0);
 		}
-		if(x < 0){
-			x += MAX_WIDTH;
+		if(temp.getiX() < 0){
+			temp.add(MAX_WIDTH, 0);
 		}
 		return mapPosToSquarePos(temp);
 	}
 	public Pos mapPosToSquarePos(Pos p){
+		
 		return new Pos((p.getX() / MAX_WIDTH) * squares.length , (p.getY() / MAX_HEIGHT) * squares[0].length);
 	}
 	public static int getSquareSize() {

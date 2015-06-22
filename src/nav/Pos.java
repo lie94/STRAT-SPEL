@@ -46,6 +46,12 @@ public class Pos implements Cloneable{
 		y += p.getY();
 		return this;
 	}
+	public int getiX(){
+		return (int) x;
+	}
+	public int getiY(){
+		return (int) y;
+	}
 	public double getX(){
 		return x;
 	}
