@@ -3,7 +3,7 @@ package utility;
 public class Pair<S,T> implements Cloneable{
 	S key;
 	T value;
-	Pair(S key, T value){
+	public Pair(S key, T value){
 		this.key = key;
 		this.value = value;
 	}

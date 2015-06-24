@@ -166,7 +166,7 @@ public abstract class Utility {
 		}
 		return null;
 	}
-	private static ArrayList<Pos> getNeighbors(Pos p, int map_width, int map_height){
+	public static ArrayList<Pos> getNeighbors(Pos p, int map_width, int map_height){
 		ArrayList<Pos> ret = new ArrayList<Pos>();
 		if(p.getiY() != 0){
 			ret.add(new Pos(	p.getiX()						,p.getiY() - 1));
@@ -175,7 +175,7 @@ public abstract class Utility {
 		}
 		ret.add(new Pos(	mod(p.getiX() - 1,map_width)	,p.getiY()));
 		ret.add(new Pos(	mod(p.getiX() + 1,map_width)	,p.getiY()));
-		if(p.getiY() != map_height){
+		if(p.getiY() != map_height - 1){
 			ret.add(new Pos(	p.getiX()						,p.getiY() + 1));
 			ret.add(new Pos(	mod(p.getiX() - 1,map_width)	,p.getiY() + 1));
 			ret.add(new Pos(	mod(p.getiX() + 1,map_width)	,p.getiY() + 1));	

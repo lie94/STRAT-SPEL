@@ -80,11 +80,11 @@ public class Run extends Canvas implements Runnable{
 		addKeyListener((KeyListener) gsm);
 		addMouseWheelListener(gsm);
 		addMouseListener(gsm);
-		try { //SIMULATE LOADING
-			Thread.sleep(2000);
+		/*try { //SIMULATE LOADING
+			//Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}
+		}*/
 		l.stop();
 		new Thread(this).start();
 		frame.setCursor(Cursor.DEFAULT_CURSOR);
@@ -100,8 +100,10 @@ public class Run extends Canvas implements Runnable{
 			render();
 			long t1 = System.currentTimeMillis();
 			if(t1-t0 < 1000.0 / TARGET_FPS){
-				while(t1-t0 < 1000.0 / TARGET_FPS){
-					t1 = System.currentTimeMillis();
+				try { 
+					Thread.sleep((int) (1000.0 / TARGET_FPS) - System.currentTimeMillis() + t0);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 			}
 		}

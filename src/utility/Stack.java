@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Stack<T extends Cloneable> implements Cloneable{
 	ArrayList<T> stack;
-	Stack(){
+	public Stack(){
 		stack = new ArrayList<>();
 	}
 	public T pull(){

@@ -5,7 +5,10 @@ import java.awt.Graphics;
 import java.awt.MouseInfo;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
+
+import java.util.Collections;
 
 import nav.Pos;
 import nav.Screen;
@@ -44,7 +47,7 @@ public class GameMap extends GameState{
 		super(s,gsm);
 		this.s = s;
 		SQUARE_SIZE = STD_SQUARE_SIZE; 
-		squares = generateMap();
+		squares = generateMap(true);
 		MAX_WIDTH = squares.length * SQUARE_SIZE;
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
 		minimap = new MiniMap(s,this);
@@ -72,7 +75,7 @@ public class GameMap extends GameState{
 		squares = new Square[width][height];
 		this.s = s;
 		SQUARE_SIZE = STD_SQUARE_SIZE; 
-		squares = generateMap();
+		squares = generateMap(false);
 		MAX_WIDTH = squares.length * SQUARE_SIZE;
 		MAX_HEIGHT = squares[0].length * SQUARE_SIZE;
 		showGrid = false;
@@ -286,10 +289,54 @@ public class GameMap extends GameState{
 	public static int getSquareSize() {
 		return SQUARE_SIZE;
 	}
-	public static Square[][] generateMap(){
+	public static Square[][] generateMap(boolean b){
+		if(b){
+			return generateDFSMap();
+		}
+		return generateBlockMap();
+	}
+	private static Square[][] generateDFSMap(){
+		Square[][] map = new Square[160][100];
+		map = (Square[][]) Utility.setAllElements(new Square(0),map);
+		
+		int number_of_islands = 40;
+		int island_size;
 		Random rn = new Random();
+		boolean [][] visited;
+		for(int i = 0; i < number_of_islands; i++){
+			visited = new boolean[map.length][map[0].length];
+			island_size = 300 + rn.nextInt(500);
+			Pos start = new Pos(rn.nextInt(map.length),rn.nextInt(map[0].length));
+			int type = getType(start.getiY(),map[0].length);
+			for(int count = 0; count < island_size; count++){
+				dfs(start,type,map,visited,rn);
+			}
+		}
+		return map;
+	}
+	private static void dfs(Pos start, int type, Square[][] map, boolean[][] visited, Random rn){
+		if(!visited[start.getiX()][start.getiY()] && rn.nextBoolean()){
+			visited[start.getiX()][start.getiY()] = true;
+			map[start.getiX()][start.getiY()] = new Square(type);
+			return;
+		}
+		ArrayList<Pos> temp_list = Utility.getNeighbors(start, visited.length, visited[0].length);
+		Collections.shuffle(temp_list);
+		for(Pos p: temp_list){
+			if(!visited[p.getiX()][p.getiY()] && rn.nextBoolean()){
+				visited[p.getiX()][p.getiY()] = true;
+				map[p.getiX()][p.getiY()] = new Square(type);
+				return;
+			}else if(rn.nextBoolean()){
+				dfs(p,type,map,visited,rn);
+				return;
+			}
+		}
+	}
+	private static Square[][] generateBlockMap(){
 		Square[][] temp = new Square[160][100];
 		temp = (Square[][]) Utility.setAllElements(new Square(0),temp);
+		Random rn = new Random();
 		int radius = temp[1].length / 5;
 		int points = 25 + rn.nextInt(11);
 		for(int i = 0; i < points; i++){
@@ -434,19 +481,23 @@ public class GameMap extends GameState{
 	}
 	private static int getType(int y, int y_end, int y_max){
 		double temp = Utility.avrage(y,y_end);
-		temp = 2 * Utility.abs((y_max / 2.0) - temp) / y_max;
+		return getType((int) temp,y_max);
+		
+	}
+	private static int getType(int y, int y_max){
+		double procent = 2 * Utility.abs((y_max / 2.0) - y) / y_max;
 		Random rn = new Random();
-		if(temp > 0.85){
-			if(temp < 0.90 && rn.nextInt(2) == 0){
+		if(procent > 0.85){
+			if(procent < 0.90 && rn.nextInt(2) == 0){
 				return 5; //TUNDRA
 			}
 			return 3; //ICE
-		}else if(temp > 0.40){
-			if(temp < 0.60 && rn.nextInt(2) == 0){
+		}else if(procent > 0.40){
+			if(procent < 0.60 && rn.nextInt(2) == 0){
 				return 2;
 			}
 			return 5;
-		}else if(temp < 0.15 && rn.nextInt(2) == 0){
+		}else if(procent < 0.15 && rn.nextInt(2) == 0){
 			return 4;
 		}else{
 			return 2;
