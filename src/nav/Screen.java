@@ -1,7 +1,7 @@
 package nav;
 
+import utility.Utility;
 import gamestate.map.GameMap;
-import main.StatFunc;
 
 public class Screen extends Pos{
 	public static final double SPEED = 10;
@@ -61,7 +61,7 @@ public class Screen extends Pos{
 		correctPos();
 	}
 	public Pos getRelativeMiddle(){
-		return new Pos(StatFunc.avg(x,x + WIDTH)  / GameMap.MAX_WIDTH, StatFunc.avg(y,y+HEIGHT) / GameMap.MAX_HEIGHT);
+		return new Pos(Utility.avg(x,x + WIDTH)  / GameMap.MAX_WIDTH, Utility.avg(y,y+HEIGHT) / GameMap.MAX_HEIGHT);
 	}
 	public void move(int dir){
 		move(dir,SPEED);

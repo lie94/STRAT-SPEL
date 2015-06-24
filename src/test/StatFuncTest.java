@@ -1,6 +1,7 @@
 package test;
 
-import main.StatFunc;
+import gamestate.map.GameMap;
+import utility.Utility;
 import nav.Pos;
 import junit.framework.TestCase;
 
@@ -11,9 +12,12 @@ public class StatFuncTest extends TestCase{
 		assertEquals(1,p.getX() < 2 ? 1 : 2);
 	}
 	public void testStatFuncs(){
-		assertEquals(2	,StatFunc.mod(7, 5));
-		assertEquals(4	,StatFunc.mod(-1,5));
+		assertEquals(2	,Utility.mod(7, 5));
+		assertEquals(4	,Utility.mod(-1,5));
 		assertEquals(-1 ,-1 % 5);
-		
+		Pos[] temp = Utility.bfs(new Pos(0,0), new Pos(79,0), GameMap.generateMap());
+		for(Pos p : temp){
+			System.out.println(p);
+		}
 	}
 }
