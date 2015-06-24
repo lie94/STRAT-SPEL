@@ -311,8 +311,33 @@ public class GameMap extends GameState{
 			for(int count = 0; count < island_size; count++){
 				dfs(start,type,map,visited,rn);
 			}
+			for(int count = 0; count < island_size * 0.6; count++)
+				dfs(start,map,rn);
 		}
 		return map;
+	}
+	/**
+	 * For making water around islands
+	 * @param start
+	 * @param map
+	 * @param rn
+	 */
+	private static void dfs(Pos start, Square[][] map, Random rn){
+		if(map[start.getiX()][start.getiY()].getType() == 0 && rn.nextBoolean()){
+			map[start.getiX()][start.getiY()] = new Square(1);
+			return;
+		}
+		ArrayList<Pos> temp_list = Utility.getNeighbors(start, map.length, map[0].length);
+		Collections.shuffle(temp_list);
+		for(Pos p: temp_list){
+			if(map[start.getiX()][start.getiY()].getType() == 0 && rn.nextBoolean()){
+				map[p.getiX()][p.getiY()] = new Square(1);
+				return;
+			}else if(rn.nextBoolean()){
+				dfs(p,map,rn);
+				return;
+			}
+		}
 	}
 	private static void dfs(Pos start, int type, Square[][] map, boolean[][] visited, Random rn){
 		if(!visited[start.getiX()][start.getiY()] && rn.nextBoolean()){

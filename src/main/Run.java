@@ -80,11 +80,6 @@ public class Run extends Canvas implements Runnable{
 		addKeyListener((KeyListener) gsm);
 		addMouseWheelListener(gsm);
 		addMouseListener(gsm);
-		/*try { //SIMULATE LOADING
-			//Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}*/
 		l.stop();
 		new Thread(this).start();
 		frame.setCursor(Cursor.DEFAULT_CURSOR);
